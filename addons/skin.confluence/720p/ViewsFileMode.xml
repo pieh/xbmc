@@ -180,9 +180,23 @@
 				<orientation>vertical</orientation>
 				<visible>Control.IsVisible(50)</visible>
 			</control>
+			<control type="textbox">
+        <posx>850</posx>
+        <posy>0</posy>
+        <width>350</width>
+        <height>200</height>
+        <label>ARTIST: $INFO[Listitem.Property(Artist_Description)]</label>
+			</control>
+			<control type="textbox">
+        <posx>850</posx>
+        <posy>200</posy>
+        <width>350</width>
+        <height>200</height>
+        <label>ALBUM: $INFO[Listitem.Property(Artist_Description)]</label>
+			</control>
 			<control type="group">
 				<posx>850</posx>
-				<posy>100</posy>
+				<posy>400</posy>
 				<visible>Control.IsVisible(50)</visible>
 				<control type="image">
 					<posx>0</posx>
