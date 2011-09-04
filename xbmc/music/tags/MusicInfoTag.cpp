@@ -46,8 +46,10 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
 
   m_strURL = tag.m_strURL;
   m_strArtist = tag.m_strArtist;
+  m_iArtistId = tag.m_iArtistId;
   m_strAlbumArtist = tag.m_strAlbumArtist;
   m_strAlbum = tag.m_strAlbum;
+  m_iAlbumId = tag.m_iAlbumId;
   m_strGenre = tag.m_strGenre;
   m_strTitle = tag.m_strTitle;
   m_strMusicBrainzTrackID = tag.m_strMusicBrainzTrackID;
@@ -117,9 +119,19 @@ const CStdString& CMusicInfoTag::GetArtist() const
   return m_strArtist;
 }
 
+int CMusicInfoTag::GetArtistID() const
+{
+  return m_iArtistId;
+}
+
 const CStdString& CMusicInfoTag::GetAlbum() const
 {
   return m_strAlbum;
+}
+
+int CMusicInfoTag::GetAlbumID() const
+{
+  return m_iAlbumId;
 }
 
 const CStdString& CMusicInfoTag::GetAlbumArtist() const

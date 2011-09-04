@@ -42,7 +42,9 @@ public:
   const CStdString& GetTitle() const;
   const CStdString& GetURL() const;
   const CStdString& GetArtist() const;
+  int GetArtistID() const;
   const CStdString& GetAlbum() const;
+  int GetAlbumID() const;
   const CStdString& GetAlbumArtist() const;
   const CStdString& GetGenre() const;
   int GetTrackNumber() const;

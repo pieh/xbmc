@@ -805,6 +805,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
   album.strThemes = pDS->fv(album_strThemes).get_asString();
   album.strLabel = pDS->fv(album_strLabel).get_asString();
   album.strType = pDS->fv(album_strType).get_asString();
+  album.bFullInfo = true;
   return album;
 }
 
@@ -823,6 +824,7 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThu
   artist.strDisbanded = pDS->fv(artist_strDisbanded).get_asString();
   artist.strYearsActive = pDS->fv(artist_strYearsActive).get_asString();
   artist.strInstruments = pDS->fv(artist_strInstruments).get_asString();
+  artist.bFullInfo = true;
 
   if (needThumb)
   {
@@ -4701,6 +4703,7 @@ void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& art
   item.SetProperty("artist_died",artist.strDied);
   item.SetProperty("artist_disbanded",artist.strDisbanded);
   item.SetProperty("artist_yearsactive",artist.strYearsActive);
+  item.SetProperty("artist_hasfullinfo", artist.bFullInfo);
 }
 
 void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album)
@@ -4714,6 +4717,7 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_artist", album.strArtist);
   item.SetProperty("album_genre", album.strGenre);
   item.SetProperty("album_title", album.strAlbum);
+  item.SetProperty("album_hasfullinfo", album.bFullInfo);
   if (album.iRating > 0)
     item.SetProperty("album_rating", album.iRating);
 }

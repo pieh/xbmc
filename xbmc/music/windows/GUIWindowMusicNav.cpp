@@ -90,6 +90,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     if (m_thumbLoader.IsLoading())
       m_thumbLoader.StopThread();
+    m_thumbLoader.Clear();
     break;
   case GUI_MSG_WINDOW_INIT:
     {
@@ -263,6 +264,19 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   return CGUIWindowMusicBase::OnClick(iItem);
 }
 
+bool CGUIWindowMusicNav::Update(const CStdString &strDirectory)
+{
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
+  if (!CGUIWindowMusicBase::Update(strDirectory))
+    return false;
+
+  m_thumbLoader.Load(*m_vecItems, !m_vecItems->IsMusicDb());
+
+  return true;
+}
+
 bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (m_bDisplayEmptyDatabaseMessage)
@@ -271,19 +285,13 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (strDirectory.IsEmpty())
     AddSearchFolder();
 
-  if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
-
   bool bResult = CGUIWindowMusicBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
     if (items.IsPlayList())
       OnRetrieveMusicInfo(items);
     if (!items.IsMusicDb())
-    {
       items.SetCachedMusicThumbs();
-      m_thumbLoader.Load(*m_vecItems);
-    }
   }
 
   // update our content in the info manager

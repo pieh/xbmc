@@ -43,6 +43,7 @@ protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
   // override base class methods
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool Update(const CStdString &strDirectory);
   virtual void UpdateButtons();
   virtual void PlayItem(int iItem);
   virtual void OnWindowLoaded();

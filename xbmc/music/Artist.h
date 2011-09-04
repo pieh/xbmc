@@ -54,6 +54,7 @@ public:
     thumbURL.Clear();
     discography.clear();
     idArtist = -1;
+    bFullInfo = false;
   }
 
   bool Load(const TiXmlElement *movie, bool chained=false, bool prefix=false);
@@ -72,6 +73,7 @@ public:
   CStdString strYearsActive;
   CScraperUrl thumbURL;
   CFanart fanart;
+  bool bFullInfo;
   std::vector<std::pair<CStdString,CStdString> > discography;
 };
 

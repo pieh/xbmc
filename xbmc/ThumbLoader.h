@@ -24,9 +24,11 @@
 #include "BackgroundInfoLoader.h"
 #include "utils/JobManager.h"
 #include "FileItem.h"
+#include "threads/CriticalSection.h"
 
 class CStreamDetails;
 class IStreamDetailsObserver;
+class CArtist;
 
 /*!
  \ingroup thumbs,jobs
@@ -135,9 +137,16 @@ public:
 
 class CMusicThumbLoader : public CThumbLoader
 {
+private:
+  std::map<int, CArtist> m_artistMap;
+  std::map<int, CAlbum> m_albumMap;
+  CCriticalSection m_lock;
+  bool m_bLoadThumbs;
 public:
   CMusicThumbLoader();
   virtual ~CMusicThumbLoader();
+  void Load(CFileItemList& items, bool loadThumbs = true);
+  void Clear();
   virtual bool LoadItem(CFileItem* pItem);
 };
 #endif

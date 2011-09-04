@@ -34,6 +34,10 @@
 #include "utils/log.h"
 #include "programs/Shortcut.h"
 #include "video/VideoInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
+#include "music/MusicDatabase.h"
+#include "music/Artist.h"
+#include "threads/SingleLock.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 
@@ -336,19 +340,81 @@ CStdString CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
 
 CMusicThumbLoader::CMusicThumbLoader()
 {
+  m_bLoadThumbs = true;
 }
 
 CMusicThumbLoader::~CMusicThumbLoader()
 {
 }
 
+void CMusicThumbLoader::Load(CFileItemList& items, bool loadThumbs /*= true*/)
+{
+  m_bLoadThumbs = loadThumbs;
+  CThumbLoader::Load(items);
+}
+
 bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
+  if (m_bLoadThumbs)
+  {
   if (!pItem->HasThumbnail())
     pItem->SetUserMusicThumb();
   else
     LoadRemoteThumb(pItem);
+  }
+  if (pItem->GetMusicInfoTag()->GetArtistID() != -1 && !pItem->GetPropertyBOOL("artist_hasfullinfo"))
+  {
+    map<int, CArtist>::const_iterator it;
+    {
+      CSingleLock lock(m_lock);
+      it = m_artistMap.find(pItem->GetMusicInfoTag()->GetArtistID());
+    }
+    if (it != m_artistMap.end())
+      CMusicDatabase::SetPropertiesFromArtist(*pItem, it->second);
+    else
+    {
+      CMusicDatabase mdb;
+      mdb.Open();
+      CArtist artist;
+      mdb.GetArtistInfo(pItem->GetMusicInfoTag()->GetArtistID(), artist, false);
+      mdb.Close();
+      {
+        CSingleLock lock(m_lock);
+        m_artistMap[pItem->GetMusicInfoTag()->GetArtistID()] = artist;
+      }
+      CMusicDatabase::SetPropertiesFromArtist(*pItem, artist);
+    }
+  }
+  if (pItem->GetMusicInfoTag()->GetAlbumID() != -1 && !pItem->GetPropertyBOOL("album_hasfullinfo"))
+  {
+    map<int, CAlbum>::const_iterator it;
+    {
+      CSingleLock lock(m_lock);
+      it = m_albumMap.find(pItem->GetMusicInfoTag()->GetAlbumID());
+    }
+    if (it != m_albumMap.end())
+      CMusicDatabase::SetPropertiesFromAlbum(*pItem, it->second);
+    else
+    {
+      CMusicDatabase mdb;
+      mdb.Open();
+      CAlbum album;
+      mdb.GetAlbumInfo(pItem->GetMusicInfoTag()->GetAlbumID(), album, NULL);
+      mdb.Close();
+      {
+        CSingleLock lock(m_lock);
+        m_albumMap[pItem->GetMusicInfoTag()->GetAlbumID()] = album;
+      }
+      CMusicDatabase::SetPropertiesFromAlbum(*pItem, album);
+    }
+  }
   return true;
 }
 
+void CMusicThumbLoader::Clear()
+{
+  CSingleLock lock(m_lock);
+  m_artistMap.clear();
+  m_albumMap.clear();
+}
