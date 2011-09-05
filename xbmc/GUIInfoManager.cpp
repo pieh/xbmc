@@ -469,7 +469,9 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
                                   { "playcount",        LISTITEM_PLAYCOUNT },
-                                  { "discnumber",       LISTITEM_DISC_NUMBER }};
+                                  { "discnumber",       LISTITEM_DISC_NUMBER },
+                                  { "artistdescription", LISTITEM_ARTIST_DESCRIPTION },
+                                  { "albumdescription",  LISTITEM_ALBUM_DESCRIPTION }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -2561,7 +2563,7 @@ int CGUIInfoManager::GetMultiInfoInt(const GUIInfo &info, int contextWindow) con
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
-CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow) const
+CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow)
 {
   if (info.m_info == SKIN_STRING)
   {
@@ -2991,7 +2993,7 @@ CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
   return "";
 }
 
-const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) const
+const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
 {
   PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   if (playlist.size() < 1)
@@ -3143,7 +3145,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   return GetMusicTagLabel(item, m_currentFile);
 }
 
-CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) const
+CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
 {
   if (!item->HasMusicInfoTag()) return "";
   const CMusicInfoTag &tag = *item->GetMusicInfoTag();
@@ -3703,7 +3705,7 @@ int CGUIInfoManager::GetItemInt(const CGUIListItem *item, int info) const
   return 0;
 }
 
-CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 {
   if (!item) return "";
 
@@ -4074,11 +4076,29 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
     break;
+  case LISTITEM_ARTIST_DESCRIPTION:
+    if (item->IsAudio() && item->GetMusicInfoTag()->GetArtistID() != -1)
+    {
+      if (!item->GetPropertyBOOL("artist_hasfullinfo"))
+        m_artistDetails.FetchArtistDetails(item->GetMusicInfoTag()->GetArtistID(),(CFileItem*)item);
+
+      return item->GetProperty("artist_description");
+    }
+    break;
+  case LISTITEM_ALBUM_DESCRIPTION:
+    if (item->IsAudio() && item->GetMusicInfoTag()->GetAlbumID() != -1)
+    {
+      if (!item->GetPropertyBOOL("album_hasfullinfo"))
+        m_albumDetails.FetchAlbumDetails(item->GetMusicInfoTag()->GetAlbumID(),(CFileItem*)item);
+
+      return item->GetProperty("album_description");
+    }
+    break;
   }
   return "";
 }
 
-CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
+CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
   switch (info)
   {
@@ -4190,7 +4210,7 @@ void CGUIInfoManager::UpdateFromTuxBox()
   }
 }
 
-CStdString CGUIInfoManager::GetPictureLabel(int info) const
+CStdString CGUIInfoManager::GetPictureLabel(int info)
 {
   if (info == SLIDE_FILE_NAME)
     return GetItemLabel(m_currentSlide, LISTITEM_FILENAME);

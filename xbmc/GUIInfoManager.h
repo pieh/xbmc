@@ -32,6 +32,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "inttypes.h"
 #include "XBDateTime.h"
+#include "ThumbLoader.h"
 
 #include <list>
 #include <map>
@@ -481,6 +482,8 @@ namespace INFO
 #define LISTITEM_FOLDERPATH         (LISTITEM_START + 58)
 #define LISTITEM_DISC_NUMBER        (LISTITEM_START + 59)
 #define LISTITEM_FILE_EXTENSION     (LISTITEM_START + 60)
+#define LISTITEM_ARTIST_DESCRIPTION (LISTITEM_START + 61)
+#define LISTITEM_ALBUM_DESCRIPTION  (LISTITEM_START + 62)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -599,12 +602,12 @@ public:
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
   CStdString GetMusicLabel(int item);
-  CStdString GetMusicTagLabel(int info, const CFileItem *item) const;
+  CStdString GetMusicTagLabel(int info, const CFileItem *item);
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item) const;
   CStdString GetMusicPartyModeLabel(int item);
-  const CStdString GetMusicPlaylistInfo(const GUIInfo& info) const;
-  CStdString GetPictureLabel(int item) const;
+  const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
+  CStdString GetPictureLabel(int item);
 
   __int64 GetPlayTime() const;  // in ms
   CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
@@ -636,8 +639,8 @@ public:
   void ResetCache();
 
   int GetItemInt(const CGUIListItem *item, int info) const;
-  CStdString GetItemLabel(const CFileItem *item, int info) const;
-  CStdString GetItemImage(const CFileItem *item, int info) const;
+  CStdString GetItemLabel(const CFileItem *item, int info);
+  CStdString GetItemImage(const CFileItem *item, int info);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
@@ -685,7 +688,7 @@ protected:
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   int GetMultiInfoInt(const GUIInfo &info, int contextWindow = 0) const;
-  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
+  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
@@ -757,6 +760,9 @@ protected:
   int m_libraryHasMovies;
   int m_libraryHasTVShows;
   int m_libraryHasMusicVideos;
+
+  CArtistDetails m_artistDetails;
+  CAlbumDetails m_albumDetails;
 
   CCriticalSection m_critInfo;
 };

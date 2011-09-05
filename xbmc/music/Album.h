@@ -60,6 +60,7 @@ public:
     iYear=-1;
     idArtist = -1;
     songs.clear();
+    bFullInfo = false;
   }
 
   bool Load(const TiXmlElement *movie, bool chained=false, bool prefix=false);
@@ -81,6 +82,7 @@ public:
   int iYear;
   int idArtist;
   VECSONGS songs;
+  bool bFullInfo;
 };
 
 typedef std::vector<CAlbum> VECALBUMS;

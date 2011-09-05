@@ -24,6 +24,9 @@
 #include "BackgroundInfoLoader.h"
 #include "utils/JobManager.h"
 #include "FileItem.h"
+#include "threads/CriticalSection.h"
+#include "music/Artist.h"
+#include "music/Album.h"
 
 class CStreamDetails;
 class IStreamDetailsObserver;
@@ -139,5 +142,61 @@ public:
   CMusicThumbLoader();
   virtual ~CMusicThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
+};
+
+class CArtistDetails : public CJobQueue
+{
+public:
+  void Clear();
+  bool FetchArtistDetails(int artistID, CFileItem* item);
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+protected:
+  CCriticalSection m_lock;
+  std::map<int, CArtist> m_artistMap;
+  std::vector<int> m_artistQueue;
+};
+
+class CArtistDetailsJob : public CJob
+{
+protected:
+  int m_artistID;
+  CArtist m_artist;
+public:
+  CArtistDetailsJob(int artistID);
+  virtual ~CArtistDetailsJob();
+
+  virtual bool operator==(const CJob* job) const;
+  virtual bool DoWork();
+
+  int GetArtistID() const;
+  const CArtist& GetArtist() const;
+};
+
+class CAlbumDetails : public CJobQueue
+{
+public:
+  void Clear();
+  bool FetchAlbumDetails(int albumID, CFileItem* item);
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+protected:
+  CCriticalSection m_lock;
+  std::map<int, CAlbum> m_albumMap;
+  std::vector<int> m_albumQueue;
+};
+
+class CAlbumDetailsJob : public CJob
+{
+protected:
+  int m_albumID;
+  CAlbum m_album;
+public:
+  CAlbumDetailsJob(int albumID);
+  virtual ~CAlbumDetailsJob();
+
+  virtual bool operator==(const CJob* job) const;
+  virtual bool DoWork();
+
+  int GetAlbumID() const;
+  const CAlbum& GetAlbum() const;
 };
 #endif

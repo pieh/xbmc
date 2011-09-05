@@ -34,6 +34,10 @@
 #include "utils/log.h"
 #include "programs/Shortcut.h"
 #include "video/VideoInfoTag.h"
+#include "music/tags/MusicInfoTag.h"
+#include "music/MusicDatabase.h"
+#include "music/Artist.h"
+#include "threads/SingleLock.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 
@@ -352,3 +356,168 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   return true;
 }
 
+void CArtistDetails::Clear()
+{
+  CancelJobs();
+  CSingleLock lock(m_lock);
+  m_artistMap.clear();
+  m_artistQueue.clear();
+}
+
+bool CArtistDetails::FetchArtistDetails(int artistID, CFileItem* item)
+{
+  CSingleLock lock(m_lock);
+  map<int, CArtist>::const_iterator it = m_artistMap.find(artistID);
+  if (it != m_artistMap.end())
+  {
+    if (item)
+      CMusicDatabase::SetPropertiesFromArtist(*item, it->second);
+    return true;
+  }
+
+  if (find(m_artistQueue.begin(), m_artistQueue.end(), artistID) == m_artistQueue.end())
+  {
+    m_artistQueue.push_back(artistID);
+    AddJob(new CArtistDetailsJob(artistID));
+  }
+
+  return false;
+}
+
+void CArtistDetails::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  if (success)
+  {
+    CArtistDetailsJob* albumDetailsJob = ((CArtistDetailsJob*)job);
+
+    CSingleLock lock(m_lock);
+    vector<int>::const_iterator it = find(m_artistQueue.begin(), m_artistQueue.end(), albumDetailsJob->GetArtistID());
+    if (it != m_artistQueue.end())
+      m_artistQueue.erase(it);
+
+    m_artistMap[albumDetailsJob->GetArtistID()] = albumDetailsJob->GetArtist();
+  }
+  CJobQueue::OnJobComplete(jobID, success, job);
+}
+
+CArtistDetailsJob::CArtistDetailsJob(int artistID)
+ : m_artistID(artistID)
+{
+}
+
+CArtistDetailsJob::~CArtistDetailsJob()
+{
+}
+
+bool CArtistDetailsJob::operator==(const CJob* job) const
+{
+  if (strcmp(job->GetType(),GetType()) == 0)
+  {
+    const CArtistDetailsJob* jobArtistDetails = dynamic_cast<const CArtistDetailsJob*>(job);
+    if (jobArtistDetails && jobArtistDetails->m_artistID == m_artistID)
+      return true;
+  }
+  return false;
+}
+
+bool CArtistDetailsJob::DoWork()
+{
+  CMusicDatabase mdb;
+  mdb.Open();
+  bool ret = mdb.GetArtistInfo(m_artistID, m_artist, false);
+  mdb.Close();
+  return ret;
+}
+
+int CArtistDetailsJob::GetArtistID() const
+{
+  return m_artistID;
+}
+
+const CArtist& CArtistDetailsJob::GetArtist() const
+{
+  return m_artist;
+}
+
+void CAlbumDetails::Clear()
+{
+  CancelJobs();
+  CSingleLock lock(m_lock);
+  m_albumMap.clear();
+  m_albumQueue.clear();
+}
+
+bool CAlbumDetails::FetchAlbumDetails(int albumID, CFileItem* item)
+{
+  CSingleLock lock(m_lock);
+  map<int, CAlbum>::const_iterator it = m_albumMap.find(albumID);
+  if (it != m_albumMap.end())
+  {
+    if (item)
+      CMusicDatabase::SetPropertiesFromAlbum(*item, it->second);
+    return true;
+  }
+
+  if (find(m_albumQueue.begin(), m_albumQueue.end(), albumID) == m_albumQueue.end())
+  {
+    m_albumQueue.push_back(albumID);
+    AddJob(new CAlbumDetailsJob(albumID));
+  }
+
+  return false;
+}
+
+void CAlbumDetails::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  if (success)
+  {
+    CAlbumDetailsJob* albumDetailsJob = ((CAlbumDetailsJob*)job);
+
+    CSingleLock lock(m_lock);
+    vector<int>::const_iterator it = find(m_albumQueue.begin(), m_albumQueue.end(), albumDetailsJob->GetAlbumID());
+    if (it != m_albumQueue.end())
+      m_albumQueue.erase(it);
+
+    m_albumMap[albumDetailsJob->GetAlbumID()] = albumDetailsJob->GetAlbum();
+  }
+  CJobQueue::OnJobComplete(jobID, success, job);
+}
+
+CAlbumDetailsJob::CAlbumDetailsJob(int albumID)
+ : m_albumID(albumID)
+{
+}
+
+CAlbumDetailsJob::~CAlbumDetailsJob()
+{
+}
+
+bool CAlbumDetailsJob::operator==(const CJob* job) const
+{
+  if (strcmp(job->GetType(),GetType()) == 0)
+  {
+    const CAlbumDetailsJob* jobAlbumDetails = dynamic_cast<const CAlbumDetailsJob*>(job);
+    if (jobAlbumDetails && jobAlbumDetails->m_albumID == m_albumID)
+      return true;
+  }
+  return false;
+}
+
+bool CAlbumDetailsJob::DoWork()
+{
+  CMusicDatabase mdb;
+  mdb.Open();
+  bool ret = mdb.GetAlbumInfo(m_albumID, m_album, false);
+  mdb.Close();
+  return ret;
+}
+
+int CAlbumDetailsJob::GetAlbumID() const
+{
+  return m_albumID;
+}
+
+const CAlbum& CAlbumDetailsJob::GetAlbum() const
+{
+  return m_album;
+}
