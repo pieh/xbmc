@@ -294,6 +294,10 @@ bool CGUIControl::HasFocus(void) const
 
 void CGUIControl::SetFocus(bool focus)
 {
+  // check if we can focus
+  if (!CanFocus() && focus)
+    return;
+
   if (m_bHasFocus && !focus)
     QueueAnimation(ANIM_TYPE_UNFOCUS);
   else if (!m_bHasFocus && focus)
