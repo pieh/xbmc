@@ -294,6 +294,10 @@ bool CGUIControl::HasFocus(void) const
 
 void CGUIControl::SetFocus(bool focus)
 {
+  // check if we can focus
+  if (!CanFocus() && focus)
+    return;
+
   if (m_bHasFocus && !focus)
     QueueAnimation(ANIM_TYPE_UNFOCUS);
   else if (!m_bHasFocus && focus)
@@ -630,6 +634,13 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   // and finally, update our control information (if not pushed)
   if (!m_pushedUpdates)
     UpdateInfo(item);
+
+  if (m_bHasFocus && !CanFocus())
+  {
+    // control no longer can be focused, notify window to focus default control
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), 0, 1);
+    SendWindowMessage(msg);
+  }
 }
 
 bool CGUIControl::UpdateColors()
