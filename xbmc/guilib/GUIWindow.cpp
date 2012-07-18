@@ -601,6 +601,11 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         if (pFocusedControl)
           return pFocusedControl->OnMessage(message);
       }
+      else if (message.GetParam1() == 1)
+      {
+        // if controlId == 0 and param1 == 1 focus default control
+        SET_CONTROL_FOCUS(m_defaultControl, 0);
+      }
       return true;
     }
     break;

@@ -634,6 +634,13 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   // and finally, update our control information (if not pushed)
   if (!m_pushedUpdates)
     UpdateInfo(item);
+
+  if (m_bHasFocus && !CanFocus())
+  {
+    // control no longer can be focused, notify window to focus default control
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), 0, 1);
+    SendWindowMessage(msg);
+  }
 }
 
 bool CGUIControl::UpdateColors()
