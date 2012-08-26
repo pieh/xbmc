@@ -68,6 +68,8 @@ public:
   void SetSelected(bool bSelected);
   virtual CStdString GetDescription() const;
   void SetAlpha(unsigned char alpha);
+  virtual float GetWidth() const;
+  virtual void SetMinWidth(float minWidth);
 
   void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor, color_t shadowColor, color_t focusedColor);
   void PythonSetDisabledColor(color_t disabledColor);
@@ -97,6 +99,9 @@ protected:
   CGUIInfoLabel  m_info2;
   CGUILabel      m_label;
   CGUILabel      m_label2;
+
+  float m_minWidth;
+  float m_renderWidth;
 
   CGUIAction m_clickActions;
   CGUIAction m_focusActions;

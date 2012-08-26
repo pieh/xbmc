@@ -36,6 +36,8 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
   m_bSelected = false;
   m_alpha = 255;
   m_focusCounter = 0;
+  m_minWidth = 0;
+  m_renderWidth = 0;
   ControlType = GUICONTROL_BUTTON;
 }
 
@@ -45,12 +47,14 @@ CGUIButtonControl::~CGUIButtonControl(void)
 
 void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  ProcessText(currentTime);
+
   if (m_bInvalidated)
   {
-    m_imgFocus.SetWidth(m_width);
+    m_imgFocus.SetWidth(GetWidth());
     m_imgFocus.SetHeight(m_height);
 
-    m_imgNoFocus.SetWidth(m_width);
+    m_imgNoFocus.SetWidth(GetWidth());
     m_imgNoFocus.SetHeight(m_height);
   }
 
@@ -84,7 +88,6 @@ void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
   m_imgFocus.Process(currentTime);
   m_imgNoFocus.Process(currentTime);
 
-  ProcessText(currentTime);
   // if button wasn't marked as dirty we need to check if labels aren't suppose
   // to scroll and mark as dirty if any of them should
   if (!m_controlIsDirty && (m_label.Process(currentTime) || m_label2.Process(currentTime)))
@@ -117,19 +120,44 @@ CGUILabel::COLOR CGUIButtonControl::GetTextColor() const
   return CGUILabel::COLOR_TEXT;
 }
 
+float CGUIButtonControl::GetWidth() const
+{
+  return m_renderWidth;
+}
+
+void CGUIButtonControl::SetMinWidth(float minWidth)
+{
+  if (m_minWidth != minWidth)
+    MarkDirtyRegion();
+
+  m_minWidth = minWidth;
+}
+
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
 void CGUIButtonControl::ProcessText(unsigned int currentTime)
 {
   CRect labelRenderRect = m_label.GetRenderRect();
   CRect label2RenderRect = m_label2.GetRenderRect();
 
-  bool changed = m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
-  changed |= m_label.SetText(m_info.GetLabel(m_parentID));
+  bool changed = m_label.SetText(m_info.GetLabel(m_parentID), m_width);
+  CStdString label2(m_info2.GetLabel(m_parentID));
+  changed |= m_label2.SetText(label2, m_width);
+
+  float newWidth = m_minWidth ? CLAMP(CGUILabel::GetMinimalWidth(m_label, m_label2), m_minWidth, m_width) : m_width;
+  if (m_renderWidth != newWidth)
+  {
+    m_renderWidth = newWidth;
+    CRect rect(m_posX, m_posY, m_posX + m_renderWidth, m_posY + m_height);
+    SetHitRect(rect);
+    SetInvalid(); // images need resizing
+    m_label.SetMaxRect(m_posX, m_posY, m_renderWidth, m_height);
+    m_label2.SetMaxRect(m_posX, m_posY, m_renderWidth, m_height);
+    changed = true;
+  }
   changed |= m_label.SetScrolling(HasFocus());
 
-  // render the second label if it exists
-  CStdString label2(m_info2.GetLabel(m_parentID));
-  changed |= m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
-  changed |= m_label2.SetText(label2);
+  // process the second label if it exists
   if (!label2.IsEmpty())
   {
     changed |= m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
