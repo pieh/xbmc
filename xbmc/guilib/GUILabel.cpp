@@ -22,6 +22,8 @@
 #include "utils/CharsetConverter.h"
 #include <limits>
 
+#define MIN_SPACE 10
+
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow)
     : m_label(labelInfo)
     , m_textLayout(labelInfo.font, overflow == OVER_FLOW_WRAP, height)
@@ -212,7 +214,6 @@ bool CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
   if (rect.Intersect(label2.m_renderRect).IsEmpty())
     return false; // nothing to do (though it could potentially encroach on the min_space requirement)
   
-  static const float min_space = 10;
   // overlap vertically and horizontally - check alignment
   CGUILabel &left = label1.m_renderRect.x1 <= label2.m_renderRect.x1 ? label1 : label2;
   CGUILabel &right = label1.m_renderRect.x1 <= label2.m_renderRect.x1 ? label2 : label1;
@@ -223,12 +224,21 @@ bool CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
     // [1       [2.....[2   |      1]..1]         2]
     // [1       [2..........|.[2   1]..1]         2]
     if (right.m_renderRect.x1 > chopPoint)
-      chopPoint = right.m_renderRect.x1 - min_space;
+      chopPoint = right.m_renderRect.x1 - MIN_SPACE;
     else if (left.m_renderRect.x2 < chopPoint)
-      chopPoint = left.m_renderRect.x2 + min_space;
-    left.m_renderRect.x2 = chopPoint - min_space;
-    right.m_renderRect.x1 = chopPoint + min_space;
+      chopPoint = left.m_renderRect.x2 + MIN_SPACE;
+    left.m_renderRect.x2 = chopPoint - MIN_SPACE;
+    right.m_renderRect.x1 = chopPoint + MIN_SPACE;
     return true;
   }
   return false;
+}
+
+float CGUILabel::GetMinimalWidth(const CGUILabel &label1, const CGUILabel &label2)
+{
+  float label2width = label2.GetTextWidth();
+  if (label2width > 0)
+    return label1.m_label.offsetX + label1.GetTextWidth() + MIN_SPACE + label2width + label2.m_label.offsetX;
+  else
+    return 2 * label1.m_label.offsetX + label1.GetTextWidth();
 }

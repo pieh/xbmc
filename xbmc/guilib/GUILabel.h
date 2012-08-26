@@ -210,6 +210,10 @@ public:
    \param label2 Second label to check
    */
   static bool CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2);
+
+  /*! \brief Calculate minimal width that 2 labels combined need to fully display their text
+   */
+  static float GetMinimalWidth(const CGUILabel &label1, const CGUILabel &label2);
   
 protected:
   color_t GetColor() const;
