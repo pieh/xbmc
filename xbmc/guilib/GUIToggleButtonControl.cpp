@@ -121,6 +121,12 @@ void CGUIToggleButtonControl::SetWidth(float width)
   m_selectButton.SetWidth(width);
 }
 
+void CGUIToggleButtonControl::SetMinWidth(float minWidth)
+{
+  CGUIButtonControl::SetMinWidth(minWidth);
+  m_selectButton.SetMinWidth(minWidth);
+}
+
 void CGUIToggleButtonControl::SetHeight(float height)
 {
   CGUIButtonControl::SetHeight(height);

@@ -56,6 +56,7 @@ public:
   virtual CStdString GetDescription() const;
   void SetToggleSelect(const CStdString &toggleSelect);
   void SetAltClickActions(const CGUIAction &clickActions);
+  virtual void SetMinWidth(float minWidth);
 
 protected:
   virtual bool UpdateColors();
