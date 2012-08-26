@@ -27,6 +27,8 @@
 
 #include "GUIControl.h"
 
+struct CGUIBackgroundImage;
+
 /*!
  \ingroup controls
  \brief group of controls, useful for remembering last control + animating/hiding together
@@ -82,6 +84,8 @@ public:
 
   virtual bool IsGroup() const { return true; };
 
+  void SetBackgroundImage(CGUIBackgroundImage* bgImage);
+
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
@@ -94,6 +98,8 @@ protected:
    \return true if the control is valid, false otherwise.
    */
   bool IsValidControl(const CGUIControl *control) const;
+
+  void ProcessBackground(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
   // sub controls
   std::vector<CGUIControl *> m_children;
@@ -113,5 +119,7 @@ protected:
   bool m_defaultAlways;
   int m_focusedControl;
   bool m_renderFocusedLast;
+
+  CGUIBackgroundImage* m_backgroundImage;
 };
 

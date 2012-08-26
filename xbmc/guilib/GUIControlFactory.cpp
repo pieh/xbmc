@@ -62,6 +62,7 @@
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "GUIAction.h"
+#include "GUIBackgroundImage.h"
 
 using namespace std;
 using namespace EPG;
@@ -986,6 +987,19 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   XMLUtils::GetString(pControlNode, "action", action);
 
+  auto_ptr<CGUIBackgroundImage> backgroundImage;
+  {
+    CTextureInfo backgroundTextureInfo;
+    if (GetTexture(pControlNode, "backgroundtexture", backgroundTextureInfo))
+    {
+      backgroundImage.reset(new CGUIBackgroundImage(backgroundTextureInfo));
+
+      CStdString extent;
+      XMLUtils::GetString(pControlNode, "backgroundextent", extent);
+      GetRectFromString(extent, backgroundImage->m_extent);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
   //
@@ -1003,6 +1017,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         parentID, id, posX, posY, width, height);
       ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl, defaultAlways);
       ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
+      ((CGUIControlGroup *)control)->SetBackgroundImage(backgroundImage.get());
     }
   }
   else if (type == CGUIControl::GUICONTROL_GROUPLIST)
@@ -1014,6 +1029,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scroller);
     ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
     ((CGUIControlGroupList *)control)->SetMinSize(minWidth, minHeight);
+    ((CGUIControlGroupList *)control)->SetBackgroundImage(backgroundImage.get());
   }
   else if (type == CGUIControl::GUICONTROL_LABEL)
   {

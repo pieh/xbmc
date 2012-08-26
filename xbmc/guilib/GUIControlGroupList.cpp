@@ -23,6 +23,7 @@
 #include "GUIInfoManager.h"
 #include "GUIControlProfiler.h"
 #include "GUIFont.h" // for XBFONT_* definitions
+#include "GUIBackgroundImage.h"
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)
@@ -82,11 +83,17 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
       pos += Size(control) + m_itemGap;
     g_graphicsContext.RestoreOrigin();
   }
+
+  ProcessBackground(currentTime, dirtyregions);
+
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIControlGroupList::Render()
 {
+  if (m_backgroundImage)
+    m_backgroundImage->m_texture.Render();
+
   // we run through the controls, rendering as we go
   bool render(g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height));
   float pos = GetAlignOffset();

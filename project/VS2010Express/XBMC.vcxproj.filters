@@ -3840,6 +3840,9 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIAudioManager.h">
       <Filter>guilib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIBackgroundImage.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIBaseContainer.h">
       <Filter>guilib</Filter>
     </ClInclude>

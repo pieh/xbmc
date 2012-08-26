@@ -20,6 +20,7 @@
 
 #include "GUIControlGroup.h"
 #include "GUIControlProfiler.h"
+#include "GUIBackgroundImage.h"
 
 using namespace std;
 
@@ -29,6 +30,7 @@ CGUIControlGroup::CGUIControlGroup()
   m_defaultAlways = false;
   m_focusedControl = 0;
   m_renderFocusedLast = false;
+  m_backgroundImage = NULL;
   ControlType = GUICONTROL_GROUP;
 }
 
@@ -39,6 +41,7 @@ CGUIControlGroup::CGUIControlGroup(int parentID, int controlID, float posX, floa
   m_defaultAlways = false;
   m_focusedControl = 0;
   m_renderFocusedLast = false;
+  m_backgroundImage = NULL;
   ControlType = GUICONTROL_GROUP;
 }
 
@@ -48,6 +51,7 @@ CGUIControlGroup::CGUIControlGroup(const CGUIControlGroup &from)
   m_defaultControl = from.m_defaultControl;
   m_defaultAlways = from.m_defaultAlways;
   m_renderFocusedLast = from.m_renderFocusedLast;
+  m_backgroundImage = from.m_backgroundImage ? new CGUIBackgroundImage(*from.m_backgroundImage) : NULL;
 
   // run through and add our controls
   for (ciControls it = from.m_children.begin(); it != from.m_children.end(); ++it)
@@ -61,6 +65,7 @@ CGUIControlGroup::CGUIControlGroup(const CGUIControlGroup &from)
 CGUIControlGroup::~CGUIControlGroup(void)
 {
   ClearAll();
+  delete m_backgroundImage;
 }
 
 void CGUIControlGroup::AllocResources()
@@ -72,6 +77,8 @@ void CGUIControlGroup::AllocResources()
     if (!control->IsDynamicallyAllocated())
       control->AllocResources();
   }
+  if (m_backgroundImage)
+    m_backgroundImage->m_texture.AllocResources();
 }
 
 void CGUIControlGroup::FreeResources(bool immediately)
@@ -82,6 +89,8 @@ void CGUIControlGroup::FreeResources(bool immediately)
     CGUIControl *control = *it;
     control->FreeResources(immediately);
   }
+  if (m_backgroundImage)
+    m_backgroundImage->m_texture.FreeResources(immediately);
 }
 
 void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
@@ -90,6 +99,26 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
   {
     CGUIControl *control = *it;
     control->DynamicResourceAlloc(bOnOff);
+  }
+  if (m_backgroundImage)
+    m_backgroundImage->m_texture.DynamicResourceAlloc(bOnOff);
+}
+
+void CGUIControlGroup::ProcessBackground(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (m_backgroundImage)
+  {
+    bool bgChanged = m_backgroundImage->m_texture.SetPosition(GetXPosition() - m_backgroundImage->m_extent.x1, GetYPosition() - m_backgroundImage->m_extent.y1);
+    bgChanged |= m_backgroundImage->m_texture.SetWidth(GetWidth() + m_backgroundImage->m_extent.x1 + m_backgroundImage->m_extent.x2);
+    bgChanged |= m_backgroundImage->m_texture.SetHeight(GetHeight() + m_backgroundImage->m_extent.y1 + m_backgroundImage->m_extent.y2);
+
+    if (bgChanged)
+    {
+      m_backgroundImage->m_texture.SetInvalid();
+      dirtyregions.push_back(m_backgroundImage->m_texture.GetRenderRect());
+    }
+
+    m_backgroundImage->m_texture.Process(currentTime);
   }
 }
 
@@ -109,6 +138,8 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
       rect.Union(control->GetRenderRegion());
   }
 
+  ProcessBackground(currentTime, dirtyregions);
+
   g_graphicsContext.RestoreOrigin();
   CGUIControl::Process(currentTime, dirtyregions);
   m_renderRegion = rect;
@@ -118,6 +149,10 @@ void CGUIControlGroup::Render()
 {
   CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(pos.x, pos.y);
+
+  if (m_backgroundImage)
+    m_backgroundImage->m_texture.Render();
+
   CGUIControl *focusedControl = NULL;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
@@ -660,6 +695,12 @@ void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const
     else if ((*it)->IsGroup())
       ((CGUIControlGroup *)(*it))->GetContainers(containers);
   }
+}
+
+void CGUIControlGroup::SetBackgroundImage(CGUIBackgroundImage* bgImage)
+{
+  delete m_backgroundImage;
+  m_backgroundImage = bgImage ? new CGUIBackgroundImage(*bgImage) : NULL;
 }
 
 #ifdef _DEBUG
