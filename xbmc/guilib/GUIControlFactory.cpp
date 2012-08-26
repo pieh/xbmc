@@ -1076,6 +1076,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
     ((CGUIButtonControl *)control)->SetLabel(strLabel);
     ((CGUIButtonControl *)control)->SetLabel2(strLabel2);
+    ((CGUIButtonControl *)control)->SetMinWidth(minWidth);
     ((CGUIButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIButtonControl *)control)->SetFocusActions(focusActions);
     ((CGUIButtonControl *)control)->SetUnFocusActions(unfocusActions);
