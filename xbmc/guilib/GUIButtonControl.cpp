@@ -85,6 +85,11 @@ void CGUIButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
   m_imgNoFocus.Process(currentTime);
 
   ProcessText(currentTime);
+  // if button wasn't marked as dirty we need to check if labels aren't suppose
+  // to scroll and mark as dirty if any of them should
+  if (!m_controlIsDirty && (m_label.Process(currentTime) || m_label2.Process(currentTime)))
+    MarkDirtyRegion();
+
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
