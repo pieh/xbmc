@@ -76,6 +76,7 @@ protected:
 
   // stuff for autowidth
   float m_minWidth;
+  float m_renderWidth;
 
   // multi-info stuff
   CGUIInfoLabel m_infoLabel;
