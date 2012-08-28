@@ -188,6 +188,7 @@ void CGUILabel::UpdateRenderRect()
   float width, height;
   m_textLayout.GetTextExtent(width, height);
   width = std::min(width, GetMaxWidth());
+  height = std::min(height, GetMaxHeight());
   if (m_label.align & XBFONT_CENTER_Y)
     m_renderRect.y1 = m_maxRect.y1 + (m_maxRect.Height() - height) * 0.5f;
   else
@@ -207,6 +208,12 @@ float CGUILabel::GetMaxWidth() const
   if (m_label.width) return m_label.width;
   return m_maxRect.Width() - 2*m_label.offsetX;
 }
+
+float CGUILabel::GetMaxHeight() const
+{
+  return m_maxRect.Height() - 2*m_label.offsetY;
+}
+
 
 bool CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
 {

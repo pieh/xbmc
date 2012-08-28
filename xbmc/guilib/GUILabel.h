@@ -181,9 +181,16 @@ public:
   /*! \brief Returns the maximal width that this label can render into
    \return Maximal width that this label can render into. Note that this may differ from the
            amount given in SetMaxRect as offsets and text width overrides have been taken into account.
-   \sa SetMaxRect
+   \sa SetMaxRect, GetMaxHeight
    */
   float GetMaxWidth() const;
+
+  /*! \brief Returns the maximal height that this label can render into
+   \return Maximal height that this label can render into. Note that this may differ from the
+           amount given in SetMaxRect as offsets have been taken into account.
+   \sa SetMaxRect, GetMaxWidth
+   */
+  float GetMaxHeight() const;
   
   /*! \brief Calculates the width of some text
    \param text CStdStringW of text whose width we want
