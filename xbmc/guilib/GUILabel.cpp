@@ -21,6 +21,7 @@
 #include "GUILabel.h"
 #include "utils/CharsetConverter.h"
 #include <limits>
+#include "guilib/GraphicContext.h"
 
 #define MIN_SPACE 10
 
@@ -97,6 +98,7 @@ bool CGUILabel::Process(unsigned int currentTime)
 
 void CGUILabel::Render()
 {
+  bool restore = m_renderRect.Height() < GetTextHeight() && g_graphicsContext.SetClipRegion(m_renderRect.x1, m_renderRect.y1, m_renderRect.Width(), m_renderRect.Height());
   color_t color = GetColor();
   bool renderSolid = (m_color == COLOR_DISABLED);
   bool overFlows = (m_renderRect.Width() + 0.5f < m_textLayout.GetTextWidth()); // 0.5f to deal with floating point rounding issues
@@ -124,6 +126,8 @@ void CGUILabel::Render()
       align |= XBFONT_TRUNCATED;
     m_textLayout.Render(posX, posY, m_label.angle, color, m_label.shadowColor, align, m_overflowType == OVER_FLOW_CLIP ? m_textLayout.GetTextWidth() : m_renderRect.Width(), renderSolid);
   }
+  if (restore)
+    g_graphicsContext.RestoreClipRegion();
 }
 
 void CGUILabel::SetInvalid()
