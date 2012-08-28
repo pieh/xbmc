@@ -51,6 +51,7 @@ public:
   virtual CStdString GetDescription() const;
   virtual float GetWidth() const;
   virtual void SetWidth(float width);
+  virtual float GetHeight() const;
   virtual CRect CalcRenderRegion() const;
  
   const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
@@ -60,6 +61,7 @@ public:
   int GetCursorPos() const { return m_iCursorPos;};
   void SetInfo(const CGUIInfoLabel&labelInfo);
   void SetMinWidth(float minWidth, bool bScroll);
+  void SetMinHeight(float minHeight);
   void SetAlignment(uint32_t align);
   void SetHighlight(unsigned int start, unsigned int end);
 
@@ -76,7 +78,9 @@ protected:
 
   // stuff for autowidth
   float m_minWidth;
+  float m_minHeight;
   float m_renderWidth;
+  float m_renderHeight;
 
   // multi-info stuff
   CGUIInfoLabel m_infoLabel;

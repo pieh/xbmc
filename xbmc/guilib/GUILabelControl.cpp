@@ -34,7 +34,9 @@ CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, floa
   ControlType = GUICONTROL_LABEL;
   m_startHighlight = m_endHighlight = 0;
   m_minWidth = 0;
+  m_minHeight = 0;
   m_renderWidth = width;
+  m_renderHeight = height;
   if ((labelInfo.align & XBFONT_RIGHT) && m_width)
     m_posX -= m_width;
 }
@@ -117,9 +119,10 @@ void CGUILabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
   bool changed = false;
 
   m_renderWidth = m_minWidth ? CLAMP(m_label.GetMinimalWidth(), m_minWidth, m_width) : m_width;
+  m_renderHeight = m_minHeight ? CLAMP(m_label.GetMinimalHeight(), m_minHeight, m_height) : m_height;
 
   changed |= m_label.SetColor(IsDisabled() ? CGUILabel::COLOR_DISABLED : CGUILabel::COLOR_TEXT);
-  changed |= m_label.SetMaxRect(m_posX, m_posY, m_renderWidth, m_height);
+  changed |= m_label.SetMaxRect(m_posX, m_posY, m_renderWidth, m_renderHeight);
   changed |= m_label.Process(currentTime);
 
   if (changed)
@@ -162,6 +165,14 @@ void CGUILabelControl::SetMinWidth(float minWidth, bool bScroll)
   m_minWidth = minWidth;
 }
 
+void CGUILabelControl::SetMinHeight(float minHeight)
+{
+  if (m_minHeight != minHeight)
+    MarkDirtyRegion();
+
+  m_minHeight = minHeight;
+}
+
 void CGUILabelControl::SetAlignment(uint32_t align)
 {
   if (m_label.GetLabelInfo().align != align)
@@ -174,6 +185,11 @@ void CGUILabelControl::SetAlignment(uint32_t align)
 float CGUILabelControl::GetWidth() const
 {
   return m_renderWidth;
+}
+
+float CGUILabelControl::GetHeight() const
+{
+  return m_renderHeight;
 }
 
 void CGUILabelControl::SetWidth(float width)

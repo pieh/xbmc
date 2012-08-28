@@ -1045,6 +1045,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         labelInfo, wrapMultiLine, bHasPath);
       ((CGUILabelControl *)control)->SetInfo(content);
       ((CGUILabelControl *)control)->SetMinWidth(minWidth, bScrollLabel);
+      ((CGUILabelControl *)control)->SetMinHeight(minHeight);
     }
   }
   else if (type == CGUIControl::GUICONTROL_EDIT)
