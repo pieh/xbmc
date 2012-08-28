@@ -103,8 +103,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 
   bool changed = false;
 
-  changed |= m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
-  changed |= m_label.SetText(label);
+  changed |= m_label.SetText(label, m_width);
 
   if (changed)
     MarkDirtyRegion();
