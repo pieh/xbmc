@@ -242,3 +242,8 @@ float CGUILabel::GetMinimalWidth(const CGUILabel &label1, const CGUILabel &label
   else
     return 2 * label1.m_label.offsetX + label1.GetTextWidth();
 }
+
+float CGUILabel::GetMinimalWidth() const
+{
+  return GetTextWidth() + 2 * m_label.offsetX;
+}

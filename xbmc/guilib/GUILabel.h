@@ -214,7 +214,11 @@ public:
   /*! \brief Calculate minimal width that 2 labels combined need to fully display their text
    */
   static float GetMinimalWidth(const CGUILabel &label1, const CGUILabel &label2);
-  
+
+  /*! \brief Get minimal width that label need to fully display its text (including text offset)
+   */
+  float GetMinimalWidth() const;
+
 protected:
   color_t GetColor() const;
   
