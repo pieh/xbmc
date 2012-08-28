@@ -34,6 +34,7 @@ CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, floa
   ControlType = GUICONTROL_LABEL;
   m_startHighlight = m_endHighlight = 0;
   m_minWidth = 0;
+  m_renderWidth = width;
   if ((labelInfo.align & XBFONT_RIGHT) && m_width)
     m_posX -= m_width;
 }
@@ -109,12 +110,16 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     MarkDirtyRegion();
 }
 
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
 void CGUILabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   bool changed = false;
 
+  m_renderWidth = m_minWidth ? CLAMP(m_label.GetMinimalWidth(), m_minWidth, m_width) : m_width;
+
   changed |= m_label.SetColor(IsDisabled() ? CGUILabel::COLOR_DISABLED : CGUILabel::COLOR_TEXT);
-  changed |= m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+  changed |= m_label.SetMaxRect(m_posX, m_posY, m_renderWidth, m_height);
   changed |= m_label.Process(currentTime);
 
   if (changed)
@@ -166,13 +171,9 @@ void CGUILabelControl::SetAlignment(uint32_t align)
   }
 }
 
-#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
-
 float CGUILabelControl::GetWidth() const
 {
-  if (m_minWidth && m_minWidth != m_width)
-    return CLAMP(m_label.GetTextWidth(), m_minWidth, m_width);
-  return m_width;
+  return m_renderWidth;
 }
 
 void CGUILabelControl::SetWidth(float width)
