@@ -314,6 +314,19 @@ void CGUIControlGroupList::ClearAll()
   m_scroller.SetValue(0);
 }
 
+float CGUIControlGroupList::GetXPosition() const
+{
+  if (m_orientation == HORIZONTAL)
+    return m_posX + GetAlignOffset();
+  return m_posX;
+}
+float CGUIControlGroupList::GetYPosition() const
+{
+  if (m_orientation == VERTICAL)
+    return m_posY + GetAlignOffset();
+  return m_posY;
+}
+
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
 float CGUIControlGroupList::GetWidth() const

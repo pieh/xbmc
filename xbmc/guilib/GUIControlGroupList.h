@@ -38,6 +38,8 @@ public:
   virtual ~CGUIControlGroupList(void);
   virtual CGUIControlGroupList *Clone() const { return new CGUIControlGroupList(*this); };
 
+  virtual float GetXPosition() const;
+  virtual float GetYPosition() const;
   virtual float GetWidth() const;
   virtual float GetHeight() const;
   virtual float Size() const;
