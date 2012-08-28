@@ -154,7 +154,7 @@ void CGUILabelControl::SetLabel(const string &strLabel)
   SetInvalid();
 }
 
-void CGUILabelControl::SetWidthControl(float minWidth, bool bScroll)
+void CGUILabelControl::SetMinWidth(float minWidth, bool bScroll)
 {
   if (m_label.SetScrolling(bScroll) || m_minWidth != minWidth)
     MarkDirtyRegion();
