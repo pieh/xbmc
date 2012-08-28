@@ -155,9 +155,9 @@ bool CGUILabel::SetAlign(uint32_t align)
   return changed;
 }
 
-bool CGUILabel::SetText(const CStdString &label)
+bool CGUILabel::SetText(const CStdString &label, float forcedMaxWidth /* = 0 */)
 {
-  if (m_textLayout.Update(label, m_maxRect.Width(), m_invalid))
+  if (m_textLayout.Update(label, forcedMaxWidth > 0 ? forcedMaxWidth : m_maxRect.Width(), m_invalid))
   { // needed an update - reset scrolling and update our text layout
     m_scrollInfo.Reset();
     UpdateRenderRect();
@@ -168,9 +168,9 @@ bool CGUILabel::SetText(const CStdString &label)
     return false;
 }
 
-bool CGUILabel::SetTextW(const CStdStringW &label)
+bool CGUILabel::SetTextW(const CStdStringW &label, float forcedMaxWidth /* = 0 */)
 {
-  if (m_textLayout.UpdateW(label, m_maxRect.Width(), m_invalid))
+  if (m_textLayout.UpdateW(label, forcedMaxWidth > 0 ? forcedMaxWidth : m_maxRect.Width(), m_invalid))
   {
     m_scrollInfo.Reset();
     UpdateRenderRect();
