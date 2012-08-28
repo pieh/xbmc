@@ -247,3 +247,8 @@ float CGUILabel::GetMinimalWidth() const
 {
   return GetTextWidth() + 2 * m_label.offsetX;
 }
+
+float CGUILabel::GetMinimalHeight() const
+{
+  return GetTextHeight() + 2 * m_label.offsetY;
+}

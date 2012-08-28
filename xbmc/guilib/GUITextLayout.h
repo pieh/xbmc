@@ -80,10 +80,16 @@ public:
   
   /*! \brief Returns the precalculated width of the text to be rendered (in constant time).
    \return width of text
-   \sa GetTextExtent, CalcTextExtent
+   \sa GetTextExtent, CalcTextExtent, GetTextHeight
    */
   float GetTextWidth() const { return m_textWidth; };
-  
+
+  /*! \brief Returns the precalculated height of the text to be rendered (in constant time).
+   \return height of text
+   \sa GetTextExtent, CalcTextExtent, GetTextWidth
+   */
+  float GetTextHeight() const { return m_textHeight; };
+
   float GetTextWidth(const CStdStringW &text) const;
   bool Update(const CStdString &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
   bool UpdateW(const CStdStringW &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);

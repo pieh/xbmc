@@ -168,10 +168,16 @@ public:
   
   /*! \brief Returns the precalculated full width of the current text, regardless of layout
    \return full width of the current text
-   \sa CalcTextWidth
+   \sa CalcTextWidth, GetTextHeight
    */
   float GetTextWidth() const { return m_textLayout.GetTextWidth(); };
-  
+
+  /*! \brief Returns the precalculated full height of the current text, regardless of layout
+   \return full height of the current text
+   \sa GetTextWidth, CalcTextWidth
+   */
+  float GetTextHeight() const { return m_textLayout.GetTextHeight(); };
+
   /*! \brief Returns the maximal width that this label can render into
    \return Maximal width that this label can render into. Note that this may differ from the
            amount given in SetMaxRect as offsets and text width overrides have been taken into account.
@@ -216,8 +222,14 @@ public:
   static float GetMinimalWidth(const CGUILabel &label1, const CGUILabel &label2);
 
   /*! \brief Get minimal width that label need to fully display its text (including text offset)
+   \sa GetMinimalHeight
    */
   float GetMinimalWidth() const;
+
+  /*! \brief Get minimal height that label need to fully display its text (including text offset)
+   \sa GetMinimalWidth
+   */
+  float GetMinimalHeight() const;
 
 protected:
   color_t GetColor() const;
