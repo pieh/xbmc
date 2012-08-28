@@ -114,17 +114,19 @@ public:
   
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size
-   \param text CStdString to set as this labels text
+   \param label CStdString to set as this labels text
+   \param forcedMaxWidth override max rect width to calculate final text extent
    \sa SetTextW
    */
-  bool SetText(const CStdString &label);
+  bool SetText(const CStdString &label, float forcedMaxWidth = 0);
 
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size
-   \param text CStdStringW to set as this labels text
+   \param label CStdStringW to set as this labels text
+   \param forcedMaxWidth override max rect width to calculate final text extent
    \sa SetText
    */
-  bool SetTextW(const CStdStringW &label);
+  bool SetTextW(const CStdStringW &label, float forcedMaxWidth = 0);
   
   /*! \brief Set the color to use for the label
    Sets the color to be used for this label.  Takes effect at the next render
