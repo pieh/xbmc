@@ -60,6 +60,8 @@ public:
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
   CStdString GetLabel(int info) const;
+  virtual float GetHeight() const;
+  void SetMinHeight(float minHeight);
 
   void Scroll(unsigned int offset);
 
@@ -80,6 +82,10 @@ protected:
   unsigned int m_itemsPerPage;
   float m_itemHeight;
   unsigned int m_lastRenderTime;
+
+  // auto-sizing
+  float m_minHeight;
+  float m_renderHeight;
 
   CLabelInfo m_label;
 
