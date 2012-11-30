@@ -32,6 +32,13 @@
 #include "GUILabel.h"
 #include "GUIControl.h"
 
+class IClickListener
+{
+public:
+  virtual bool DoWork(void* params) { return false; }
+};
+typedef boost::shared_ptr<IClickListener> IClickListenerPtr;
+
 /*!
  \ingroup controls
  \brief

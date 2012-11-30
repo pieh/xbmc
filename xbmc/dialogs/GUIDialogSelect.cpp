@@ -60,6 +60,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       m_bButtonEnabled = false;
       m_useDetails = false;
       m_multiSelection = false;
+      m_buttonAction.reset();
 
       // construct selected items list
       m_selectedItems->Clear();
@@ -120,6 +121,13 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       }
       if (CONTROL_BUTTON == iControl)
       {
+        if (m_buttonAction)
+        {
+          // we pass selected item as param
+          if (m_buttonAction->DoWork(m_vecList->Get(m_viewControl.GetSelectedItem()).get()))
+            return true;
+        }
+
         m_iSelected = -1;
         m_bButtonPressed = true;
         if (m_multiSelection)
@@ -216,6 +224,12 @@ void CGUIDialogSelect::EnableButton(bool enable, int string)
 
   if (IsActive())
     SetupButton();
+}
+
+void CGUIDialogSelect::EnableButton(bool enable, int string, IClickListenerPtr buttonAction)
+{
+  m_buttonAction = buttonAction;
+  EnableButton(enable, string);
 }
 
 bool CGUIDialogSelect::IsButtonPressed()

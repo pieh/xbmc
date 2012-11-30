@@ -21,6 +21,7 @@
  */
 
 #include "GUIDialogBoxBase.h"
+#include "guilib/GUIButtonControl.h"
 #include "guilib/GUIListItem.h"
 #include "GUIViewControl.h"
 
@@ -46,6 +47,7 @@ public:
   const CFileItemPtr GetSelectedItem();
   const CFileItemList& GetSelectedItems() const;
   void EnableButton(bool enable, int string);
+  void EnableButton(bool enable, int string, IClickListenerPtr buttonAction);
   bool IsButtonPressed();
   void Sort(bool bSortOrder = true);
   void SetSelected(int iSelected);
@@ -71,4 +73,5 @@ protected:
   CFileItemList* m_selectedItems;
   CFileItemList* m_vecList;
   CGUIViewControl m_viewControl;
+  IClickListenerPtr m_buttonAction;
 };

@@ -181,6 +181,8 @@ void CButtonSettingControl::Update()
 
 CPopupListSettingControl::CPopupListSettingControl(CGUIButtonControl* pButton, int id, CSetting *pSetting)
   : CButtonSettingControl(pButton, id, pSetting)
+  , m_enableButton(false)
+  , m_iButtonLabel(0)
 {}
 
 CPopupListSettingControl::~CPopupListSettingControl()
@@ -212,6 +214,7 @@ bool CPopupListSettingControl::OnClick()
       dialog->Reset();
       dialog->SetItems(&itemList);
       dialog->SetMultiSelection(false);
+      dialog->EnableButton(m_enableButton, m_iButtonLabel, m_buttonListener);
       dialog->DoModal();
 
       if (dialog->IsConfirmed())
@@ -239,6 +242,18 @@ void CPopupListSettingControl::SetItems(const std::map<CStdString,CStdString> it
   m_items = items;
   // need to localise nothing selected label?
   m_strNoneLabel = strNoneLabel.IsEmpty() ? "" : strNoneLabel;
+}
+
+void CPopupListSettingControl::EnableButton(bool enable, int string)
+{
+  m_enableButton = enable;
+  m_iButtonLabel = string;
+}
+
+void CPopupListSettingControl::EnableButton(bool enable, int string, IClickListenerPtr buttonAction)
+{
+  m_buttonListener = buttonAction;
+  EnableButton(enable, string);
 }
 
 CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, int id, CSetting *pSetting)

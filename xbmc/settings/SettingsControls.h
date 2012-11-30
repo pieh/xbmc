@@ -20,6 +20,7 @@
  */
 
 #include "utils/StdString.h"
+#include "guilib/GUIButtonControl.h"
 
 class CGUIImage;
 class CGUISpinControlEx;
@@ -105,9 +106,14 @@ public:
   virtual bool OnClick();
   virtual void Update();
   void SetItems(const std::map<CStdString,CStdString> items, const CStdString& strNoneLabel = "");
+  void EnableButton(bool enable, int string);
+  void EnableButton(bool enable, int string, IClickListenerPtr buttonAction);
 private:
   std::map<CStdString,CStdString> m_items;
   CStdString m_strNoneLabel;
+  bool m_enableButton;
+  int m_iButtonLabel;
+  IClickListenerPtr m_buttonListener;
 };
 
 class CEditSettingControl : public CBaseSettingControl
