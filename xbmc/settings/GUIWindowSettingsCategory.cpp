@@ -51,6 +51,7 @@
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -2880,6 +2881,36 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
 #if !defined(TARGET_DARWIN)
   }
 #endif
+
+  class CTestAnalogAudio : public IClickListener
+  {
+  public:
+    virtual bool DoWork(void* params)
+    {
+      CFileItem* pItem = (CFileItem*)params;
+      // testing analog audio code goes here
+      // pItem->GetLabel() - friendly device name
+      // pItem->GetPath()  - device id
+      CGUIDialogOK::ShowAndGetInput("Test analog", pItem->GetLabel(), pItem->GetPath(), "");
+      return true;
+    }
+  };
+
+  class CTestDigitalAudio : public IClickListener
+  {
+  public:
+    virtual bool DoWork(void* params)
+    {
+      CFileItem* pItem = (CFileItem*)params;
+      // testing digital audio code goes here
+      // pItem->GetLabel() - friendly device name
+      // pItem->GetPath()  - device id
+      CGUIDialogOK::ShowAndGetInput("Test digital", pItem->GetLabel(), pItem->GetPath(), "");
+      return true;
+    }
+  };
+
+  popupSettingControl->EnableButton(true, 549, Passthrough ? IClickListenerPtr(new CTestDigitalAudio()) : IClickListenerPtr(new CTestAnalogAudio()));
 
   if (selectedValue < 0)
   {
