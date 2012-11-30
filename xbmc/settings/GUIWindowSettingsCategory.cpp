@@ -2071,6 +2071,14 @@ CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float wi
     pControl->SetWidth(width);
     pSettingControl = new CEditSettingControl((CGUIEditControl *)pControl, iControlID, pSetting);
   }
+  else if (pSetting->GetControlType() == POPUP_LIST)
+  {
+    pControl = new CGUIButtonControl(*m_pOriginalButton);
+    if (!pControl) return NULL;
+    ((CGUIButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
+    pControl->SetWidth(width);
+    pSettingControl = new CPopupListSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
+  }
   else if (pSetting->GetControlType() != SEPARATOR_CONTROL) // button control
   {
     pControl = new CGUIButtonControl(*m_pOriginalButton);

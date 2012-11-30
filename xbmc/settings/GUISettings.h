@@ -163,6 +163,7 @@ class TiXmlElement;
 #define BUTTON_CONTROL_PATH_INPUT             13
 #define SEPARATOR_CONTROL                     14
 #define EDIT_CONTROL_HIDDEN_NUMBER_VERIFY_NEW 15
+#define POPUP_LIST                            16
 
 #define REPLAY_GAIN_NONE 0
 #define REPLAY_GAIN_ALBUM 1

@@ -22,12 +22,14 @@
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIEditControl.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "Util.h"
 #include "dialogs/GUIDialogOK.h"
 #include "GUISettings.h"
 #include "guilib/GUIImage.h"
 #include "guilib/LocalizeStrings.h"
 #include "addons/AddonManager.h"
+#include "guilib/GUIWindowManager.h"
 
 CBaseSettingControl::CBaseSettingControl(int id, CSetting *pSetting)
 {
@@ -175,6 +177,68 @@ void CButtonSettingControl::Update()
   else if (m_pSetting->GetControlType() == BUTTON_CONTROL_STANDARD)
     return;
   m_pButton->SetLabel2(strText);
+}
+
+CPopupListSettingControl::CPopupListSettingControl(CGUIButtonControl* pButton, int id, CSetting *pSetting)
+  : CButtonSettingControl(pButton, id, pSetting)
+{}
+
+CPopupListSettingControl::~CPopupListSettingControl()
+{}
+
+bool CPopupListSettingControl::OnClick()
+{
+  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (dialog)
+  {
+    CSettingString* setting = ((CSettingString *)m_pSetting);
+    CFileItemList itemList;
+    std::map<CStdString,CStdString>::const_iterator it = m_items.begin();
+    for (int i = 0 ; it != m_items.end() ; it++)
+    {
+      CFileItemPtr pItem(new CFileItem(it->second));
+      pItem->SetPath(it->first);
+
+      CStdString strText = setting->GetData();
+      if (it->first.Equals(strText))
+        pItem->Select(true);
+
+      itemList.Add(pItem);
+    }
+
+    if (itemList.Size() > 0)
+    {
+      dialog->SetHeading(setting->GetLabel());
+      dialog->Reset();
+      dialog->SetItems(&itemList);
+      dialog->SetMultiSelection(false);
+      dialog->DoModal();
+
+      if (dialog->IsConfirmed())
+      {
+        setting->SetData(dialog->GetSelectedItem()->GetPath());
+        Update();
+      }
+    }
+  }
+  return true;
+}
+
+void CPopupListSettingControl::Update()
+{
+  CStdString strText = ((CSettingString *)m_pSetting)->GetData();
+  std::map<CStdString,CStdString>::iterator it =  m_items.find(strText);
+  if (it != m_items.end())
+    m_pButton->SetLabel2(it->second);
+  else
+    m_pButton->SetLabel2(m_strNoneLabel);
+}
+
+void CPopupListSettingControl::SetItems(const std::map<CStdString,CStdString> items, const CStdString& strNoneLabel /* = "" */)
+{
+  m_items = items;
+  // need to localise nothing selected label?
+  m_strNoneLabel = strNoneLabel.IsEmpty() ? "" : strNoneLabel;
 }
 
 CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, int id, CSetting *pSetting)

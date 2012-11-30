@@ -93,8 +93,21 @@ public:
   virtual ~CButtonSettingControl();
   virtual bool OnClick();
   virtual void Update();
-private:
+protected:
   CGUIButtonControl *m_pButton;
+};
+
+class CPopupListSettingControl : public CButtonSettingControl
+{
+public:
+  CPopupListSettingControl(CGUIButtonControl* pButton, int id, CSetting *pSetting);
+  virtual ~CPopupListSettingControl();
+  virtual bool OnClick();
+  virtual void Update();
+  void SetItems(const std::map<CStdString,CStdString> items, const CStdString& strNoneLabel = "");
+private:
+  std::map<CStdString,CStdString> m_items;
+  CStdString m_strNoneLabel;
 };
 
 class CEditSettingControl : public CBaseSettingControl
