@@ -1950,28 +1950,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.compare(0, 12, "audiooutput.") == 0)
   {
-    if (strSetting.Equals("audiooutput.audiodevice"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-#if defined(TARGET_DARWIN)
-      // save the sinkname - since we don't have sinks on osx
-      // we need to get the fitting sinkname for the device label from the
-      // factory
-      std::string label2sink = pControl->GetCurrentLabel();
-      CAEFactory::VerifyOutputDevice(label2sink, false);
-      g_guiSettings.SetString("audiooutput.audiodevice", label2sink.c_str());
-#else
-      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
-#endif
-    }
-#if !defined(TARGET_DARWIN)
-    else if (strSetting.Equals("audiooutput.passthroughdevice"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
-    }
-#endif
-    else if (strSetting.Equals("audiooutput.guisoundmode"))
+    if (strSetting.Equals("audiooutput.guisoundmode"))
     {
       CAEFactory::SetSoundMode(g_guiSettings.GetInt("audiooutput.guisoundmode"));
     }
@@ -2867,29 +2846,18 @@ void CGUIWindowSettingsCategory::FillInPvrStartLastChannel(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
 {
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-  pControl->Clear();
+  CPopupListSettingControl* popupSettingControl =  (CPopupListSettingControl*)GetSetting(pSetting->GetSetting());
 
   CStdString currentDevice = Passthrough ? g_guiSettings.GetString("audiooutput.passthroughdevice") : g_guiSettings.GetString("audiooutput.audiodevice");
-
-  if (Passthrough)
-  {
-    m_DigitalAudioSinkMap.clear();
-    m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
-  }
-  else
-  {
-    m_AnalogAudioSinkMap.clear();
-    m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
-  }
-
   int selectedValue = -1;
+  map<CStdString, CStdString> devices;
+
   AEDeviceList sinkList;
   CAEFactory::EnumerateOutputDevices(sinkList, Passthrough);
 #if !defined(TARGET_DARWIN)
   if (sinkList.size()==0)
   {
-    pControl->AddLabel("Error - no devices found", 0);
+    ((CSettingString*)popupSettingControl->GetSetting())->SetData("null:");
     selectedValue = 0;
   }
   else
@@ -2898,21 +2866,17 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     AEDeviceList::const_iterator iter = sinkList.begin();
     for (int i=0; iter != sinkList.end(); iter++)
     {
-      CStdString label = (*iter).first;
-      CStdString sink  = (*iter).second;
-      pControl->AddLabel(label.c_str(), i);
+#if defined(TARGET_DARWIN)
+      std::string deviceID = iter->first;
+      CAEFactory::VerifyOutputDevice(deviceID, Passthrough);
+#else
+      std::string deviceID = iter->second;
+#endif
 
-      if (currentDevice.Equals(sink))
+      if (currentDevice == deviceID)
         selectedValue = i;
-
-      if (Passthrough)
-        m_DigitalAudioSinkMap[label] = sink;
-      else
-        m_AnalogAudioSinkMap[label] = sink;
-
-      i++;
+      devices[deviceID] = iter->first;
     }
-
 #if !defined(TARGET_DARWIN)
   }
 #endif
@@ -2920,14 +2884,12 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   if (selectedValue < 0)
   {
     CLog::Log(LOGWARNING, "Failed to find previously selected audio sink");
-    pControl->SetValue(0);
-    if (!Passthrough)
-      ((CSettingString*)pSetting)->SetData(m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
-    else
-      ((CSettingString*)pSetting)->SetData(m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
+    // pick first device or null
+    CStdString sink = devices.size() > 0 ? devices.begin()->second : "null:";
+    ((CSettingString*)pSetting)->SetData(sink);
   }
-  else
-    pControl->SetValue(selectedValue);
+
+  popupSettingControl->SetItems(devices, "Error - no devices found");
 }
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)

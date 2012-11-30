@@ -503,12 +503,12 @@ void CGUISettings::Initialize()
     CStdString defaultDeviceName;
     CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
   #endif
-  AddString(ao, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
-  AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
+  AddString(ao, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), POPUP_LIST);
+  AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), POPUP_LIST);
 #else
   AddSeparator(ao, "audiooutput.sep1");
-  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::GetDefaultDevice(false)), SPIN_CONTROL_TEXT);
-  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::GetDefaultDevice(true )), SPIN_CONTROL_TEXT);
+  AddString   (ao, "audiooutput.audiodevice"      , 545, CStdString(CAEFactory::GetDefaultDevice(false)), POPUP_LIST);
+  AddString   (ao, "audiooutput.passthroughdevice", 546, CStdString(CAEFactory::GetDefaultDevice(true )), POPUP_LIST);
   AddSeparator(ao, "audiooutput.sep2");
 #endif
 #endif

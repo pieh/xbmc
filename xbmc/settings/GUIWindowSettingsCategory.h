@@ -97,8 +97,6 @@ protected:
   CStdString m_strOldTrackFormat;
   CStdString m_strOldTrackFormatRight;
 
-  std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
-  std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
   std::map<CStdString, CStdString> m_SkinFontSetIDs;
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
