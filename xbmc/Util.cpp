@@ -2526,7 +2526,7 @@ void CUtil::GetExternalStreamNameAndLangFromFilename(const CStdString& strVideo,
         strLangTmp.Replace('-', ' ');
 
         // try to recognize language
-        g_LangCodeExpander.ConvertToTwoCharCode(strLangTmp, lang_current);
+        g_LangCodeExpander.ConvertToThreeCharCode(lang_current, strLangTmp);
       }
 
       // try to extract name from name "name" group in current regexp
@@ -2541,17 +2541,7 @@ void CUtil::GetExternalStreamNameAndLangFromFilename(const CStdString& strVideo,
         name = name_current;
       }
     }
-  
-    if (name.empty() && !lang.empty())
-    {
-      CStdString nameTmp;
-      if (g_LangCodeExpander.Lookup(nameTmp, lang))
-        name = nameTmp;
-    }
   }
-
-  if (name.empty())
-    name = URIUtils::GetFileName(strStream);
 
   CLog::Log(LOGDEBUG, "%s - Language = '%s' / Name = '%s' from %s", __FUNCTION__, lang.c_str(), name.c_str(), strStream.c_str());
 }
