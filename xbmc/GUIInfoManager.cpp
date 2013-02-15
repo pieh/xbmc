@@ -458,6 +458,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "duration",         LISTITEM_DURATION },
                                   { "isselected",       LISTITEM_ISSELECTED },
                                   { "isplaying",        LISTITEM_ISPLAYING },
+                                  { "isactive",         LISTITEM_ISACTIVE },
                                   { "plot",             LISTITEM_PLOT },
                                   { "plotoutline",      LISTITEM_PLOT_OUTLINE },
                                   { "episode",          LISTITEM_EPISODE },
@@ -4854,6 +4855,11 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
+  else if (condition == LISTITEM_ISACTIVE)
+  {
+    if (item->IsFileItem() && ((CFileItem*)item)->HasEPGInfoTag())
+      return ((CFileItem*)item)->GetEPGInfoTag()->IsActive();
+  }
   else if (condition == LISTITEM_IS_RESUMABLE)
   {
     if (item->IsFileItem())
