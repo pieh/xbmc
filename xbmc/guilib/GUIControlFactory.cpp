@@ -616,6 +616,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo textureAltFocus, textureAltNoFocus;
   CTextureInfo textureRadioOn, textureRadioOff;
   CTextureInfo imageNoFocus, imageFocus;
+  CTextureInfo textureRuler;
   CGUIInfoLabel texturePath;
   CRect borderSize;
 
@@ -894,6 +895,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
   XMLUtils::GetInt(pControlNode, "timeblocks", timeBlocks);
   XMLUtils::GetInt(pControlNode, "rulerunit", rulerUnit);
+  GetTexture(pControlNode, "rulertexture", textureRuler);
 
   GetInfoTexture(pControlNode, "imagepath", texture, texturePath, parentID);
 
@@ -1244,7 +1246,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_EPGGRID)
   {
-    control = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, timeBlocks, rulerUnit);
+    control = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, timeBlocks, rulerUnit, textureRuler);
     ((CGUIEPGGridContainer *)control)->LoadLayout(pControlNode);
     ((CGUIEPGGridContainer *)control)->SetRenderOffset(offset);
     ((CGUIEPGGridContainer *)control)->SetType(viewType, viewLabel);

@@ -45,8 +45,9 @@ using namespace std;
 
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width,
                                            float height, ORIENTATION orientation, int scrollTime,
-                                           int preloadItems, int timeBlocks, int rulerUnit)
+                                           int preloadItems, int timeBlocks, int rulerUnit, const CTextureInfo& rulerTexture)
     : IGUIContainer(parentID, controlID, posX, posY, width, height)
+    , m_guiRulerTexture(posX, posY, width, height, rulerTexture)
 {
   ControlType             = GUICONTAINER_EPGGRID;
   m_blocksPerPage         = timeBlocks;
@@ -103,6 +104,21 @@ void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList &d
   m_renderTime = currentTime;
 
   changed = true;
+
+  CPoint originRuler = CPoint(m_rulerPosX, m_rulerPosY) + m_renderOffset;
+  float rulerPos = ((CDateTime::GetUTCDateTime() - m_gridStart).GetSecondsTotal() * m_blockSize) / (MINSPERBLOCK * 60) + (m_orientation == VERTICAL ? originRuler.x : originRuler.y) - m_programmeScrollOffset;
+  if (m_orientation == VERTICAL)
+  {
+    m_guiRulerTexture.SetWidth(m_guiRulerTexture.GetTextureWidth());
+    m_guiRulerTexture.SetPosition(rulerPos - m_guiRulerTexture.GetWidth() / 2, originRuler.y);
+  }
+  else
+  {
+    m_guiRulerTexture.SetHeight(m_guiRulerTexture.GetTextureHeight());
+    m_guiRulerTexture.SetPosition(originRuler.x, rulerPos - m_guiRulerTexture.GetHeight() / 2);
+  }
+  
+ m_guiRulerTexture.Process(m_renderTime);
 
   if (changed)
     MarkDirtyRegion();
@@ -384,6 +400,13 @@ void CGUIEPGGridContainer::Render()
   if (focusedItem)
     RenderProgrammeItem(focusedPosX, focusedPosY, focusedwidth, focusedheight, focusedItem.get(), true);
 
+  g_graphicsContext.RestoreClipRegion();
+
+  if (m_orientation == VERTICAL)
+    g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_height);
+  else
+    g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_width, m_gridHeight);
+  m_guiRulerTexture.Render();
   g_graphicsContext.RestoreClipRegion();
 
   CGUIControl::Render();
