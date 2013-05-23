@@ -983,7 +983,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetInt(pControlNode, "scrollspeed", labelInfo.scrollSpeed);
   spinInfo.scrollSpeed = labelInfo.scrollSpeed;
 
-  GetString(pControlNode, "scrollsuffix", labelInfo.scrollSuffix);
+  XMLUtils::GetString(pControlNode, "scrollsuffix", labelInfo.scrollSuffix);
   spinInfo.scrollSuffix = labelInfo.scrollSuffix;
 
   XMLUtils::GetString(pControlNode, "action", action);
