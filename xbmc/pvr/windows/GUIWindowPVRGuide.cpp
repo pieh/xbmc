@@ -273,6 +273,11 @@ void CGUIWindowPVRGuide::UpdateData(bool bUpdateSelectedFile /* = true */)
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
 
+    // if no channel is playing now, skip don't switch to channel guide
+  CPVRChannelPtr CurrentChannel;
+  if (m_iGuideView == GUIDE_VIEW_CHANNEL && (!g_PVRManager.IsPlaying() || g_PVRManager.IsPlayingRecording()))
+    m_iGuideView = GUIDE_VIEW_NOW;
+
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
     UpdateViewChannel(bUpdateSelectedFile);
   else if (m_iGuideView == GUIDE_VIEW_NOW)
