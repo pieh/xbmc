@@ -530,11 +530,17 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
   {
     m_dragging = true;
     bool guessSelector = false;
+    bool handleEvent = true;
     if (event.m_state == 1)
-    { // grab exclusive access
-      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
-      SendWindowMessage(msg);
-      guessSelector = true;
+    {
+      if (m_guiBackground.HitTest(point))
+      { // grab exclusive access only if we hit slider area
+        CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+        SendWindowMessage(msg);
+        guessSelector = true;
+      }
+      else
+        handleEvent = false;
     }
     else if (event.m_state == 3)
     { // release exclusive access
@@ -542,8 +548,12 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
       SendWindowMessage(msg);
     }
-    SetFromPosition(point, guessSelector);
-    return EVENT_RESULT_HANDLED;
+
+    if (handleEvent)
+    {
+      SetFromPosition(point, guessSelector);
+      return EVENT_RESULT_HANDLED;
+    }
   }
   else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground.HitTest(point))
   {
@@ -564,7 +574,7 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
   {
     return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA;
   }  
-  else if (event.m_id == ACTION_GESTURE_BEGIN)
+  else if (event.m_id == ACTION_GESTURE_BEGIN && m_guiBackground.HitTest(point))
   { // grab exclusive access
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
     SendWindowMessage(msg);
