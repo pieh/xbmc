@@ -45,7 +45,6 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     CStdString GetText() const;
     bool IsConfirmed() { return m_bIsConfirmed; };
     void SetHiddenInput(bool hiddenInput) { m_hiddenInput = hiddenInput; };
-    void Character(WCHAR wch);
 
   protected:
     virtual void OnInitWindow();
@@ -66,10 +65,11 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void OnRemoteNumberClick(int key);
     void UpdateButtons();
     char GetCharacter(int iButton);
-    void UpdateLabel();
+    void UpdateLabel(bool pulseCallback = true);
     void ResetShiftAndSymbols();
-    void Backspace();
+    void Backspace(bool pulseCallback = true);
     void SendSearchMessage();
+    void Character(WCHAR wch, bool pulseCallback = true);
 
     CStdStringW m_strEdit;
     int m_iCursorPos;

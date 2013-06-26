@@ -114,7 +114,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
   bool handled(true);
   if (action.GetID() == ACTION_BACKSPACE)
   {
-    Backspace();
+    Backspace(false);
   }
   else if (action.GetID() == ACTION_ENTER)
   {
@@ -128,7 +128,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
   {
     if (m_strEditing.IsEmpty() && (unsigned int) GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
     { // add a space
-      Character(L' ');
+      Character(L' ', false);
     }
     else
       MoveCursor(1);
@@ -175,10 +175,10 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
       if (GetCursorPos() < m_strEdit.GetLength())
       {
         MoveCursor(1);
-        Backspace();
+        Backspace(false);
       }
     }
-    else if (b == XBMCVK_BACK) Backspace();
+    else if (b == XBMCVK_BACK) Backspace(false);
     else if (b == XBMCVK_ESCAPE) Close();
   }
   else if (action.GetID() >= KEY_ASCII)
@@ -192,7 +192,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
       switch (ch)
       {
       case 0x8: // backspace
-        Backspace();
+        Backspace(false);
         break;
       case 0x9: // Tab (do nothing)
       case 0xB: // Non-printing character, ignore
@@ -209,13 +209,13 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
         if (GetCursorPos() < m_strEdit.GetLength())
         {
           MoveCursor(1);
-          Backspace();
+          Backspace(false);
         }
         break;
       default:  //use character input
         // When we support text input method, we only accept text by gui text message.
         if (!g_Windowing.IsTextInputEnabled())
-          Character(action.GetUnicode());
+          Character(action.GetUnicode(), false);
         break;
       }
     }
@@ -344,14 +344,14 @@ CStdString CGUIDialogKeyboardGeneric::GetText() const
   return utf8String;
 }
 
-void CGUIDialogKeyboardGeneric::Character(WCHAR ch)
+void CGUIDialogKeyboardGeneric::Character(WCHAR ch, bool triggerUpdate /* = true */)
 {
   if (!ch) return;
   m_strEditing.Empty();
   m_iEditingOffset = 0;
   // TODO: May have to make this routine take a WCHAR for the symbols?
   m_strEdit.Insert(GetCursorPos(), ch);
-  UpdateLabel();
+  UpdateLabel(triggerUpdate);
   MoveCursor(1);
 }
 
@@ -367,7 +367,7 @@ void CGUIDialogKeyboardGeneric::FrameMove()
   CGUIDialog::FrameMove();
 }
 
-void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice for one USB SDL keyboard action/character
+void CGUIDialogKeyboardGeneric::UpdateLabel(bool pulseCallback) // FIXME seems to be called twice for one USB SDL keyboard action/character
 {
   CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
   if (pEdit)
@@ -403,7 +403,7 @@ void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice 
     if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY >= now)
       return;
 
-    if (m_pCharCallback)
+    if (m_pCharCallback && pulseCallback)
     {
       // do not send editing text comes from system input method
       if (!m_hiddenInput && !m_strEditing.IsEmpty())
@@ -413,14 +413,14 @@ void CGUIDialogKeyboardGeneric::UpdateLabel() // FIXME seems to be called twice 
   }
 }
 
-void CGUIDialogKeyboardGeneric::Backspace()
+void CGUIDialogKeyboardGeneric::Backspace(bool pulseCallback)
 {
   int iPos = GetCursorPos();
   if (iPos > 0)
   {
     m_strEdit.erase(iPos - 1, 1);
     MoveCursor(-1);
-    UpdateLabel();
+    UpdateLabel(pulseCallback);
   }
 }
 
@@ -446,12 +446,12 @@ void CGUIDialogKeyboardGeneric::OnRemoteNumberClick(int key)
       m_indexInSeries = 0;
       // reset our shift and symbol states, and update our label to ensure the search filter is sent
       ResetShiftAndSymbols();
-      UpdateLabel();
+      UpdateLabel(false);
     }
     else
     { // same key as last time within the appropriate time period
       m_indexInSeries++;
-      Backspace();
+      Backspace(false);
     }
   }
   else
@@ -473,7 +473,7 @@ void CGUIDialogKeyboardGeneric::OnRemoteNumberClick(int key)
   bool caps = (m_keyType == CAPS && !m_bShift) || (m_keyType == LOWER && m_bShift);
   if (!caps && *characterPressed >= 'A' && *characterPressed <= 'Z')
     ch += 32;
-  Character(ch);
+  Character(ch, false);
 }
 
 char CGUIDialogKeyboardGeneric::GetCharacter(int iButton)
