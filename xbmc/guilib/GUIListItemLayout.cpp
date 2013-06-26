@@ -146,14 +146,14 @@ bool CGUIListItemLayout::CheckCondition()
   return !m_condition || g_infoManager.GetBoolValue(m_condition);
 }
 
-void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)
+void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group, int parentID)
 {
   if (!group) return;
 
   CRect rect(group->GetXPosition(), group->GetYPosition(), group->GetXPosition() + group->GetWidth(), group->GetYPosition() + group->GetHeight());
 
   CGUIControlFactory factory;
-  CGUIControl *control = factory.Create(0, rect, child, true);  // true indicating we're inside a list for the
+  CGUIControl *control = factory.Create(parentID, rect, child, true);  // true indicating we're inside a list for the
                                                                 // different label control + defaults.
   if (control)
   {
@@ -163,7 +163,7 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
       TiXmlElement *grandChild = child->FirstChildElement("control");
       while (grandChild)
       {
-        LoadControl(grandChild, (CGUIControlGroup *)control);
+        LoadControl(grandChild, (CGUIControlGroup *)control, parentID);
         grandChild = grandChild->NextSiblingElement("control");
       }
     }
@@ -184,7 +184,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
   m_group.SetHeight(m_height);
   while (child)
   {
-    LoadControl(child, &m_group);
+    LoadControl(child, &m_group, context);
     child = child->NextSiblingElement("control");
   }
   // ensure width and height are valid
