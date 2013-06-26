@@ -111,6 +111,7 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
 
 bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
 {
+  CStdString oldText(GetText());
   bool handled(true);
   if (action.GetID() == ACTION_BACKSPACE)
   {
@@ -223,7 +224,7 @@ bool CGUIDialogKeyboardGeneric::OnAction(const CAction &action)
   else // unhandled by us - let's see if the baseclass wants it
     handled = CGUIDialog::OnAction(action);
 
-  if (handled && m_pCharCallback)
+  if (handled && m_pCharCallback && !oldText.Equals(GetText(), true))
   { // we did _something_, so make sure our search message filter is reset
     m_pCharCallback(this, GetText());
   }
@@ -304,11 +305,12 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
 
 void CGUIDialogKeyboardGeneric::SetText(const CStdString& aTextString)
 {
+  CStdString oldText(GetText());
   m_strEdit.Empty();
   m_strEditing.Empty();
   m_iEditingOffset = 0;
   g_charsetConverter.utf8ToW(aTextString, m_strEdit);
-  UpdateLabel();
+  UpdateLabel(!aTextString.Equals(oldText, true));
   SetCursorPos(m_strEdit.size());
 }
 
