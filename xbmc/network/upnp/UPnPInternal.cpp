@@ -251,6 +251,8 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     if (!tag.m_strFileNameAndPath.IsEmpty() && file_path)
       *file_path = tag.m_strFileNameAndPath;
 
+    object.m_DateAdded = tag.m_dateAdded.GetAsDBDate();
+
     if (tag.m_iDbId != -1 ) {
         if (tag.m_type == "musicvideo") {
           object.m_ObjectClass.type = "object.item.videoItem.musicVideoClip";
@@ -307,6 +309,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
         if (tag.HasStreamDetails()) {
             const CStreamDetails &details = tag.m_streamDetails;
             resource->m_Resolution = NPT_String::FromInteger(details.GetVideoWidth()) + "x" + NPT_String::FromInteger(details.GetVideoHeight());
+            resource->m_NbAudioChannels = details.GetAudioChannels();
         }
     }
 
@@ -632,6 +635,8 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     CDateTime date;
     date.SetFromDateString((const char*)object.m_Date);
 
+    tag.m_dateAdded.SetFromDateString((const char*)object.m_DateAdded);
+
     if(!object.m_Recorded.program_title.IsEmpty())
     {
         tag.m_type = "episode";
@@ -650,7 +655,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
         tag.m_firstAired = date;
     }
     else if (!object.m_Recorded.series_title.IsEmpty()) {
-        tag.m_type= "season";
+        tag.m_type= "tvshow";
         tag.m_strTitle = object.m_Title; // because could be TV show Title, or Season 1 etc
         tag.m_iSeason  = object.m_Recorded.episode_number / 100;
         tag.m_iEpisode = object.m_Recorded.episode_number % 100;
@@ -672,6 +677,15 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       tag.m_director.push_back(object.m_People.directors.GetItem(index)->name.GetChars());
     for (unsigned int index = 0; index < object.m_People.authors.GetItemCount(); index++)
       tag.m_writingCredits.push_back(object.m_People.authors.GetItem(index)->name.GetChars());
+
+    for(unsigned int index = 0; index < object.m_People.actors.GetItemCount(); index++)
+    {
+      SActorInfo info;
+      info.strName = object.m_People.actors.GetItem(index)->name;
+      info.strRole = object.m_People.actors.GetItem(index)->role;
+      tag.m_cast.push_back(info);
+    }
+
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
     tag.m_strMPAARating = object.m_Description.rating;
@@ -687,6 +701,18 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
       {
         tag.m_resumePoint.totalTimeInSeconds = resource->m_Duration;
         tag.m_resumePoint.timeInSeconds = object.m_MiscInfo.last_position;
+      }
+      if (!resource->m_Resolution.IsEmpty())
+      {
+        int width, height;
+        if (sscanf(resource->m_Resolution, "%dx%d", &width, &height))
+        {
+          CStreamDetailVideo* detail = new CStreamDetailVideo;
+          detail->m_iWidth = width;
+          detail->m_iHeight = height;
+          detail->m_iDuration = tag.m_duration;
+          tag.m_streamDetails.AddStream(detail);
+        }
       }
     }
     return NPT_SUCCESS;
