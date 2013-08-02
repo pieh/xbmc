@@ -70,45 +70,49 @@ namespace VIDEO
 #define VIDEODB_MAX_COLUMNS 24
 #define VIDEODB_DETAILS_FILEID			1
 
-#define VIDEODB_DETAILS_MOVIE_SET_ID			VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_MOVIE_SET_NAME		VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_MOVIE_FILE			VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_MOVIE_PATH			VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_MOVIE_PLAYCOUNT		VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_MOVIE_LASTPLAYED		VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_MOVIE_DATEADDED		VIDEODB_MAX_COLUMNS + 8
-#define VIDEODB_DETAILS_MOVIE_RESUME_TIME		VIDEODB_MAX_COLUMNS + 9
-#define VIDEODB_DETAILS_MOVIE_TOTAL_TIME		VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_MOVIE_SET_ID          VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_MOVIE_SET_NAME        VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_MOVIE_FILE            VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_MOVIE_PATH            VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_MOVIE_SOURCE          VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_MOVIE_PLAYCOUNT       VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_MOVIE_LASTPLAYED      VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_MOVIE_DATEADDED       VIDEODB_MAX_COLUMNS + 9
+#define VIDEODB_DETAILS_MOVIE_RESUME_TIME     VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_MOVIE_TOTAL_TIME      VIDEODB_MAX_COLUMNS + 11
 
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_ID     VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_EPISODE_FILE          VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_EPISODE_PATH          VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_EPISODE_PLAYCOUNT     VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_EPISODE_LASTPLAYED    VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_EPISODE_DATEADDED     VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME   VIDEODB_MAX_COLUMNS + 8
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO VIDEODB_MAX_COLUMNS + 9
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED  VIDEODB_MAX_COLUMNS + 10
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA   VIDEODB_MAX_COLUMNS + 11
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_PATH   VIDEODB_MAX_COLUMNS + 12
-#define VIDEODB_DETAILS_EPISODE_RESUME_TIME   VIDEODB_MAX_COLUMNS + 13
-#define VIDEODB_DETAILS_EPISODE_TOTAL_TIME    VIDEODB_MAX_COLUMNS + 14
-#define VIDEODB_DETAILS_EPISODE_SEASON_ID     VIDEODB_MAX_COLUMNS + 15
-						
-#define VIDEODB_DETAILS_TVSHOW_PATH		VIDEODB_MAX_COLUMNS + 1
-#define VIDEODB_DETAILS_TVSHOW_DATEADDED		VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_TVSHOW_LASTPLAYED	VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES	VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED	VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_TVSHOW_NUM_SEASONS	VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_ID       VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_EPISODE_FILE            VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_EPISODE_PATH            VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_EPISODE_SOURCE          VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_EPISODE_PLAYCOUNT       VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_EPISODE_LASTPLAYED      VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_EPISODE_DATEADDED       VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME     VIDEODB_MAX_COLUMNS + 9
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO   VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED    VIDEODB_MAX_COLUMNS + 11
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA     VIDEODB_MAX_COLUMNS + 12
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_PATH     VIDEODB_MAX_COLUMNS + 13
+#define VIDEODB_DETAILS_EPISODE_RESUME_TIME     VIDEODB_MAX_COLUMNS + 14
+#define VIDEODB_DETAILS_EPISODE_TOTAL_TIME      VIDEODB_MAX_COLUMNS + 15
+#define VIDEODB_DETAILS_EPISODE_SEASON_ID       VIDEODB_MAX_COLUMNS + 16
 
-#define VIDEODB_DETAILS_MUSICVIDEO_FILE			VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_MUSICVIDEO_PATH			VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT		VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED		VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_MUSICVIDEO_DATEADDED		VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_MUSICVIDEO_RESUME_TIME		VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME		VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_TVSHOW_PATH             VIDEODB_MAX_COLUMNS + 1
+#define VIDEODB_DETAILS_TVSHOW_SOURCE           VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_TVSHOW_DATEADDED        VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_TVSHOW_LASTPLAYED       VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES     VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED      VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_TVSHOW_NUM_SEASONS      VIDEODB_MAX_COLUMNS + 7
+
+#define VIDEODB_DETAILS_MUSICVIDEO_FILE         VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_MUSICVIDEO_PATH         VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_MUSICVIDEO_SOURCE       VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_MUSICVIDEO_PLAYCOUNT    VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_MUSICVIDEO_LASTPLAYED   VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_MUSICVIDEO_DATEADDED    VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_MUSICVIDEO_RESUME_TIME  VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_MUSICVIDEO_TOTAL_TIME   VIDEODB_MAX_COLUMNS + 9
 
 #define VIDEODB_TYPE_STRING 1
 #define VIDEODB_TYPE_INT 2
@@ -367,8 +371,8 @@ public:
   virtual bool Open();
   virtual bool CommitTransaction();
 
-  int AddMovie(const CStdString& strFilenameAndPath);
-  int AddEpisode(int idShow, const CStdString& strFilenameAndPath);
+  int AddMovie(const CStdString& strFilenameAndPath, CDateTime dateAdded = CDateTime());
+  int AddEpisode(int idShow, const CStdString& strFilenameAndPath, CDateTime dateAdded = CDateTime());
 
   // editing functions
   /*! \brief Set the playcount of an item
@@ -632,7 +636,7 @@ public:
    \param idFile id of the file in the files table
    \param strFileNameAndPath path to the file
    */
-  void UpdateFileDateAdded(int idFile, const CStdString& strFileNameAndPath);
+  void UpdateFileDateAdded(int idFile, const CStdString& strFileNameAndPath, CDateTime dateAdded = CDateTime());
 
   void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
@@ -642,10 +646,10 @@ public:
   bool ImportArtFromXML(const TiXmlNode *node, std::map<std::string, std::string> &artwork);
 
   // smart playlists and main retrieval work in these functions
-  bool GetMoviesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
+  bool GetMoviesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool getDetails = false);
   bool GetSetsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool ignoreSingleMovieSets = false);
-  bool GetTvShowsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
-  bool GetEpisodesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath = true, const SortDescription &sortDescription = SortDescription());
+  bool GetTvShowsByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool getDetails = false);
+  bool GetEpisodesByWhere(const CStdString& strBaseDir, const Filter &filter, CFileItemList& items, bool appendFullShowPath = true, const SortDescription &sortDescription = SortDescription(), bool getDetails = false);
   bool GetMusicVideosByWhere(const CStdString &baseDir, const Filter &filter, CFileItemList& items, bool checkLocks = true, const SortDescription &sortDescription = SortDescription());
   
   // retrieve sorted and limited items
@@ -701,6 +705,9 @@ public:
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
 
+  void DisableRemoteItems();
+  void SetEnabledForRemoteItems(const std::string& source, bool enabled);
+
 protected:
   friend class CEdenVideoArtUpdater;
   int GetMovieId(const CStdString& strFilenameAndPath);
@@ -725,7 +732,7 @@ protected:
   int AddCountry(const CStdString& strCountry);
   int AddStudio(const CStdString& strStudio1);
 
-  int AddTvShow(const CStdString& strPath);
+  bool AddTvShow(const CStdString& strPath, int idTvShow, CDateTime dateAdded = CDateTime());
   int AddMusicVideo(const CStdString& strFilenameAndPath);
   int AddSeason(int showID, int season);
 

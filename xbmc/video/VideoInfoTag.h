@@ -39,6 +39,7 @@ struct SActorInfo
   CStdString strRole;
   CScraperUrl thumbUrl;
   CStdString thumb;
+  bool operator==(const SActorInfo &rhs) const;
 };
 
 class CVideoInfoTag : public IArchivable, public ISerializable, public ISortable
@@ -77,6 +78,12 @@ public:
     return m_strFileNameAndPath;
   };
 
+  bool operator==(const CVideoInfoTag& rhs);
+  bool operator!=(const CVideoInfoTag& rhs)
+  {
+    return !(*this == rhs);
+  }
+
   /*! \brief retrieve the duration in seconds.
    Prefers the duration from stream details if available.
    */
@@ -100,6 +107,7 @@ public:
   CStdString m_strPlot;
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
+  CStdString m_strSource;
   CStdString m_strSortTitle;
   CStdString m_strVotes;
   std::vector<std::string> m_artist;
@@ -147,6 +155,7 @@ public:
   CDateTime m_dateAdded;
   CStdString m_type;
   int m_duration; ///< duration in seconds
+  bool m_hasDetails;
 
 private:
   /* \brief Parse our native XML format for video info.

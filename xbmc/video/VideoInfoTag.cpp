@@ -32,6 +32,22 @@
 
 using namespace std;
 
+bool SActorInfo::operator==(const SActorInfo &rhs) const
+{
+  bool ret = true;
+  ret &= strName.Equals(rhs.strName, false);
+  ret &= strRole.Equals(rhs.strRole, false);
+  ret &= thumb.Equals(rhs.thumb, false);
+
+  return ret;
+  /*
+  return strName.Equals(rhs.strName, false)
+    && strRole.Equals(rhs.strRole, false)
+    && thumb.Equals(rhs.thumb, false);
+  */
+  // && thumbUrl == rhs.thumbUrl;
+}
+
 void CVideoInfoTag::Reset()
 {
   m_director.clear();
@@ -49,7 +65,7 @@ void CVideoInfoTag::Reset()
   m_strVotes.clear();
   m_cast.clear();
   m_strSet.clear();
-  m_iSetId = -1;
+  m_iSetId = 0;
   m_tags.clear();
   m_strFile.clear();
   m_strPath.clear();
@@ -92,6 +108,7 @@ void CVideoInfoTag::Reset()
   m_strShowPath.clear();
   m_dateAdded.Reset();
   m_type.clear();
+  m_hasDetails = false;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo, const TiXmlElement *additionalNode)
@@ -809,3 +826,170 @@ unsigned int CVideoInfoTag::GetDurationFromMinuteString(const std::string &runti
   }
   return duration*60;
 }
+
+
+bool CVideoInfoTag::operator==(const CVideoInfoTag& rhs)
+{
+  /* first compare prymitive types
+  int m_parentPathID;      // the parent path id where the base path of the video lies
+  int m_iSetId;
+  int m_playCount;
+  int m_iTop250;
+  int m_iYear;
+  int m_iSeason;
+  int m_iEpisode;
+  int m_iDbId;
+  int m_iFileId;
+  int m_iSpecialSortSeason;
+  int m_iSpecialSortEpisode;
+  int m_iTrack;
+  float m_fRating;
+  float m_fEpBookmark;
+  int m_iBookmarkId;
+  int m_iIdShow;
+  int m_iIdSeason;
+  int m_duration; ///< duration in seconds
+  */
+
+
+  CVideoInfoTag tmp = *this;
+
+  tmp = rhs;
+  
+  bool ret = true;
+
+  
+  ret &= m_parentPathID == rhs.m_parentPathID;
+  ret &= m_iSetId == rhs.m_iSetId;
+  ret &= m_playCount == rhs.m_playCount;
+  ret &= m_iTop250 == rhs.m_iTop250;
+  ret &= m_iYear == rhs.m_iYear;
+  ret &= m_iSeason == rhs.m_iSeason;
+  ret &= m_iEpisode == rhs.m_iEpisode;
+  //ret &= m_iDbId == rhs.m_iDbId; (db id is not metadata)
+  //ret &= m_iFileId == rhs.m_iFileId;
+  ret &= m_iSpecialSortSeason == rhs.m_iSpecialSortSeason;
+  ret &= m_iSpecialSortEpisode == rhs.m_iSpecialSortEpisode;
+  ret &= m_iTrack == rhs.m_iTrack;
+  ret &= m_fRating == rhs.m_fRating;
+  ret &= m_fEpBookmark == rhs.m_fEpBookmark;
+  ret &= m_iBookmarkId == rhs.m_iBookmarkId;
+  ret &= m_iIdShow == rhs.m_iIdShow;
+  ret &= m_iIdSeason == rhs.m_iIdSeason;
+  ret &= m_duration == rhs.m_duration;
+  /*
+
+
+
+  bool ret = m_parentPathID == rhs.m_parentPathID
+    && m_iSetId == rhs.m_iSetId
+    && m_playCount == rhs.m_playCount
+    && m_iTop250 == rhs.m_iTop250
+    && m_iYear == rhs.m_iYear
+    && m_iSeason == rhs.m_iSeason
+    && m_iEpisode == rhs.m_iEpisode
+    && m_iDbId == rhs.m_iDbId
+    && m_iFileId == rhs.m_iFileId
+    && m_iSpecialSortSeason == rhs.m_iSpecialSortSeason
+    && m_iSpecialSortEpisode == rhs.m_iSpecialSortEpisode
+    && m_iTrack == rhs.m_iTrack
+    && m_fRating == rhs.m_fRating
+    && m_fEpBookmark == rhs.m_fEpBookmark
+    && m_iBookmarkId == rhs.m_iBookmarkId
+    && m_iIdShow == rhs.m_iIdShow
+    && m_iIdSeason == rhs.m_iIdSeason
+    && m_duration == rhs.m_duration
+    */
+  /* then compare strings
+  CStdString m_basePath; // the base path of the video, for folder-based lookups
+  CStdString m_strTagLine;
+  CStdString m_strPlotOutline;
+  CStdString m_strTrailer;
+  CStdString m_strPlot;
+  CStdString m_strTitle;
+  CStdString m_strSource;
+  CStdString m_strSortTitle;
+  CStdString m_strVotes;
+  CStdString m_strSet;
+  CStdString m_strFile;
+  CStdString m_strPath;
+  CStdString m_strIMDBNumber;
+  CStdString m_strMPAARating;
+  CStdString m_strFileNameAndPath;
+  CStdString m_strOriginalTitle;
+  CStdString m_strEpisodeGuide;
+  CStdString m_strStatus;
+  CStdString m_strProductionCode;
+  CStdString m_strShowTitle;
+  CStdString m_strAlbum;
+  CStdString m_strShowPath;
+  CStdString m_strUniqueId;
+  CStdString m_type;
+  */
+
+
+  /*
+  && m_basePath.Equals(rhs.m_basePath, true)
+  && m_strTagLine.Equals(rhs.m_strTagLine, true)
+  && m_strPlotOutline.Equals(rhs.m_strPlotOutline, true)
+  && m_strTrailer.Equals(rhs.m_strTrailer, true)
+  && m_strPlot.Equals(rhs.m_strPlot, true)
+  && m_strTitle.Equals(rhs.m_strTitle, true)
+  && m_strSource.Equals(rhs.m_strSource, true)
+  && m_strSortTitle.Equals(rhs.m_strSortTitle, true)
+  && m_strVotes.Equals(rhs.m_strVotes, true)
+  && m_strSet.Equals(rhs.m_strSet, true)
+  && m_strFile.Equals(rhs.m_strFile, true)
+  && m_strPath.Equals(rhs.m_strPath, true)
+  && m_strIMDBNumber.Equals(rhs.m_strIMDBNumber, true)
+  && m_strMPAARating.Equals(rhs.m_strMPAARating, true)
+  && m_strFileNameAndPath.Equals(rhs.m_strFileNameAndPath, true)
+  && m_strOriginalTitle.Equals(rhs.m_strOriginalTitle, true)
+  && m_strEpisodeGuide.Equals(rhs.m_strEpisodeGuide, true)
+  && m_strStatus.Equals(rhs.m_strStatus, true)
+  && m_strProductionCode.Equals(rhs.m_strProductionCode, true)
+  && m_strShowTitle.Equals(rhs.m_strShowTitle, true)
+  && m_strAlbum.Equals(rhs.m_strAlbum, true)
+  && m_strShowPath.Equals(rhs.m_strShowPath, true)
+  && m_strUniqueId.Equals(rhs.m_strUniqueId, true)
+  && m_type.Equals(rhs.m_type, true)
+  */
+
+  ret &= m_basePath.Equals(rhs.m_basePath, true);
+  ret &= m_strTagLine.Equals(rhs.m_strTagLine, true);
+  ret &= m_strPlotOutline.Equals(rhs.m_strPlotOutline, true);
+  ret &= m_strTrailer.Equals(rhs.m_strTrailer, true);
+  ret &= m_strPlot.Equals(rhs.m_strPlot, true);
+  ret &= m_strTitle.Equals(rhs.m_strTitle, true);
+  //ret &= m_strSource.Equals(rhs.m_strSource, true); (we dont need to compare it - this is set only by database)
+  ret &= m_strSortTitle.Equals(rhs.m_strSortTitle, true);
+  ret &= m_strVotes.Equals(rhs.m_strVotes, true);
+  ret &= m_strSet.Equals(rhs.m_strSet, true);
+  ret &= m_strFile.Equals(rhs.m_strFile, true);
+  ret &= m_strPath.Equals(rhs.m_strPath, true);
+  ret &= m_strIMDBNumber.Equals(rhs.m_strIMDBNumber, true);
+  ret &= m_strMPAARating.Equals(rhs.m_strMPAARating, true);
+  ret &= m_strFileNameAndPath.Equals(rhs.m_strFileNameAndPath, true);
+  ret &= m_strOriginalTitle.Equals(rhs.m_strOriginalTitle, true);
+  ret &= m_strEpisodeGuide.Equals(rhs.m_strEpisodeGuide, true);
+  ret &= m_strStatus.Equals(rhs.m_strStatus, true);
+  ret &= m_strProductionCode.Equals(rhs.m_strProductionCode, true);
+  ret &= m_strShowTitle.Equals(rhs.m_strShowTitle, true);
+  ret &= m_strAlbum.Equals(rhs.m_strAlbum, true);
+  ret &= m_strShowPath.Equals(rhs.m_strShowPath, true);
+  ret &= m_strUniqueId.Equals(rhs.m_strUniqueId, true);
+  ret &= m_type.Equals(rhs.m_type, true);
+
+  // bool
+  ret &= m_hasDetails == rhs.m_hasDetails;
+  ;
+    /*
+      std::vector<std::string> m_director;
+  std::vector<std::string> m_writingCredits;
+  std::vector<std::string> m_genre;
+  std::vector<std::string> m_country;
+    */
+
+  return ret;
+}
+
