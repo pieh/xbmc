@@ -373,17 +373,13 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
         
       if (pNewUrl.get())
       {
-        if (pImp.get() && !pImp->Exists(*pNewUrl))
-        {
-          return false;
-        }
+        if (pImp.get())
+          return pImp->Exists(*pNewUrl);
       }
       else     
       {
-        if (pImp.get() && !pImp->Exists(url))
-        {
-          return false;
-        }
+        if (pImp.get())
+          return pImp->Exists(url);
       }
     }
   }
