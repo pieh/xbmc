@@ -52,7 +52,7 @@ public:
 
   /*! \brief Deinitialize the database manager
    */
-  void Deinitialize();
+  void Deinitialize(bool addonsOnly = false);
 
   /*! \brief Check whether we can open a database.
 
