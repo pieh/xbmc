@@ -43,6 +43,8 @@
 #include "video/VideoInfoTag.h"
 #include "guilib/Key.h"
 #include "Util.h"
+#include "mediaimport/MediaImporter.h"
+#include "mediaimport/UPnPImport.h"
 
 using namespace std;
 using namespace UPNP;
@@ -159,6 +161,8 @@ public:
         message.SetStringParam("upnp://");
         g_windowManager.SendThreadMessage(message);
 
+        MediaImport::CMediaImporter::Get().RegisterImportSource(MediaImport::MediaImportPtr(new CUPnPImport(device->GetUUID().GetChars(), device->GetFriendlyName().GetChars())));
+
         return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
     virtual void OnMSRemoved(PLT_DeviceDataReference& device)
@@ -168,6 +172,8 @@ public:
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
         g_windowManager.SendThreadMessage(message);
+        
+        MediaImport::CMediaImporter::Get().UnregisterImportSource(StringUtils::Format("upnp://%s", device->GetUUID().GetChars()));
 
         PLT_SyncMediaBrowser::OnMSRemoved(device);
     }

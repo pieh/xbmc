@@ -307,6 +307,9 @@
     <Filter Include="interfaces\generic">
       <UniqueIdentifier>{4286258a-45d7-45e8-9e56-ebf18fea53ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mediaimport">
+      <UniqueIdentifier>{c6b49c3a-5b50-490f-bf62-bc814829e836}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3045,6 +3048,15 @@
       <Filter>addons</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GitRevision.cpp" />
+    <ClCompile Include="..\..\xbmc\mediaimport\MediaImporter.cpp">
+      <Filter>mediaimport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\mediaimport\UPnPImport.cpp">
+      <Filter>mediaimport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\mediaimport\IMediaImport.cpp">
+      <Filter>mediaimport</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5972,6 +5984,15 @@
       <Filter>addons</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\PlatformInclude.h" />
+    <ClInclude Include="..\..\xbmc\mediaimport\IMediaImport.h">
+      <Filter>mediaimport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\mediaimport\MediaImporter.h">
+      <Filter>mediaimport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\mediaimport\UPnPImport.h">
+      <Filter>mediaimport</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
