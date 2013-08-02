@@ -446,6 +446,16 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   }
   else if(item->HasVideoInfoTag())
   {
+    if (!item->GetVideoInfoTag()->m_hasDetails)
+    {
+      if (item->GetVideoInfoTag()->m_type == "movie")
+        m_database.GetMovieInfo(item->GetPath(), *item->GetVideoInfoTag(), item->GetVideoInfoTag()->m_iDbId);
+      else if (item->GetVideoInfoTag()->m_type == "episode")
+        m_database.GetEpisodeInfo(item->GetPath(), *item->GetVideoInfoTag(), item->GetVideoInfoTag()->m_iDbId);
+      else if (item->GetVideoInfoTag()->m_type == "tvshow")
+        m_database.GetTvShowInfo(item->GetPath(), *item->GetVideoInfoTag(), item->GetVideoInfoTag()->m_iDbId);
+    }
+
     bHasInfo = true;
     movieDetails = *item->GetVideoInfoTag();
   }
@@ -1018,7 +1028,8 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
     if (!scraper &&
         !(m_database.HasMovieInfo(item->GetPath()) ||
           m_database.HasTvShowInfo(strDir)           ||
-          m_database.HasEpisodeInfo(item->GetPath())))
+          m_database.HasEpisodeInfo(item->GetPath()))
+       && item->GetVideoInfoTag()->m_strSource.IsEmpty())
     {
       return false;
     }
