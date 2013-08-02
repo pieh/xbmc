@@ -227,6 +227,9 @@ public:
     /* resources related */
     NPT_Array<PLT_MediaItemResource> m_Resources;
 
+    /* XBMC specific */
+    NPT_String m_DateAdded;
+
     /* original DIDL for Control Points to pass to a renderer when invoking SetAVTransportURI */
     NPT_String m_Didl;    
 };

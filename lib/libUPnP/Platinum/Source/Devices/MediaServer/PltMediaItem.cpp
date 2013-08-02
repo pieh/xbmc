@@ -237,6 +237,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
         didl += "</dc:date>";
     } 
 
+    // dateadded (use same mask as date for now)
+    if ((mask & PLT_FILTER_MASK_DATE) && !m_DateAdded.IsEmpty()) {
+        didl += "<xbmc:dateadded>";
+        PLT_Didl::AppendXmlEscape(didl, m_DateAdded);
+        didl += "</xbmc:dateadded>";
+    } 
+
     // artist
     if (mask & PLT_FILTER_MASK_ARTIST) {
         // force an empty artist just in case (not DLNA Compliant though)
@@ -484,6 +491,17 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     }
     m_Date = parsed_date;
 
+    PLT_XmlHelper::GetChildText(entry, "dateadded", m_DateAdded, didl_namespace_xbmc, 256);
+    // parse date and make sure it's valid
+    for (int format=0; format<=NPT_DateTime::FORMAT_RFC_1036; format++) {
+        NPT_DateTime date;
+        if (NPT_SUCCEEDED(date.FromString(m_DateAdded, (NPT_DateTime::Format)format))) {
+            parsed_date = date.ToString((NPT_DateTime::Format)format);
+            break;
+        }
+    }
+    m_DateAdded = parsed_date;
+
     res = PLT_XmlHelper::GetAttribute(entry, "id", m_ObjectID);
     NPT_CHECK_SEVERE(res);
 
@@ -511,7 +529,7 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     m_People.authors.FromDidl(children);
     
     children.Clear();
-    PLT_XmlHelper::GetChildren(entry, children, "actors", didl_namespace_upnp);
+    PLT_XmlHelper::GetChildren(entry, children, "actor", didl_namespace_upnp);
     m_People.actors.FromDidl(children);
 
     children.Clear();

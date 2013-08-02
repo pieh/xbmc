@@ -47,11 +47,13 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server.didl")
 const char* didl_header         = "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\""
                                             " xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
                                             " xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\""
-                                            " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\">";
+                                            " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\""
+                                            " xmlns:xbmc=\"urn:schemas-xbmc-org:metadata-1-0/\">";
 const char* didl_footer         = "</DIDL-Lite>";
 const char* didl_namespace_dc   = "http://purl.org/dc/elements/1.1/";
 const char* didl_namespace_upnp = "urn:schemas-upnp-org:metadata-1-0/upnp/";
 const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0/";
+const char* didl_namespace_xbmc = "urn:schemas-xbmc-org:metadata-1-0/";
 
 /*----------------------------------------------------------------------
 |   PLT_Didl::ConvertFilterToMask

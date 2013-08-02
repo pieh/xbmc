@@ -135,6 +135,7 @@ extern const char* didl_footer;
 extern const char* didl_namespace_dc;
 extern const char* didl_namespace_upnp;
 extern const char* didl_namespace_dlna;
+extern const char* didl_namespace_xbmc;
 
 /*----------------------------------------------------------------------
 |   PLT_Didl
