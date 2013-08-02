@@ -930,7 +930,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
 
       bool needDetails = NPT_String(filter).Find("res@resolution") >= 0 || NPT_String(filter).Find("res@nrAudioChannels") >= 0 || NPT_String(filter).Find("upnp:actor") >= 0;
 
-      if (!database.GetTvShowsByWhere("videodb://tvshows/titles/", CDatabase::Filter("strSource IS NULL"), items, SortDescription(), true)) {
+      if (!database.GetTvShowsByWhere("videodb://tvshows/titles/", CDatabase::Filter("strSource IS NULL"), items, SortDescription(), needDetails)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -946,12 +946,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
 
       bool needDetails = NPT_String(filter).Find("res@resolution") >= 0 || NPT_String(filter).Find("res@nrAudioChannels") >= 0 || NPT_String(filter).Find("upnp:actor") >= 0;
 
-      if (!database.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter("strSource IS NULL"), items, SortDescription(), true)) {
-        action->SetError(800, "Internal Error");
-        return NPT_SUCCESS;
-      }
-
-      if (!database.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter("strSource IS NULL"), items, SortDescription(), false)) {
+      if (!database.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter("strSource IS NULL"), items, SortDescription(), needDetails)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -966,7 +961,9 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         return NPT_SUCCESS;
       }
 
-      if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", CDatabase::Filter("strSource IS NULL"), items, true, SortDescription(), true)) {
+      bool needDetails = NPT_String(filter).Find("res@resolution") >= 0 || NPT_String(filter).Find("res@nrAudioChannels") >= 0 || NPT_String(filter).Find("upnp:actor") >= 0;
+
+      if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", CDatabase::Filter("strSource IS NULL"), items, true, SortDescription(), needDetails)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
@@ -981,14 +978,16 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
         return NPT_SUCCESS;
       }
 
-      if (!database.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter("strSource IS NULL"), items)) {
+      bool needDetails = NPT_String(filter).Find("res@resolution") >= 0 || NPT_String(filter).Find("res@nrAudioChannels") >= 0 || NPT_String(filter).Find("upnp:actor") >= 0;
+
+      if (!database.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter("strSource IS NULL"), items, SortDescription(), needDetails)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
       itemsall.Append(items);
       items.Clear();
 
-      if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", CDatabase::Filter("strSource IS NULL"), items)) {
+      if (!database.GetEpisodesByWhere("videodb://tvshows/titles/", CDatabase::Filter("strSource IS NULL"), items, true, SortDescription(), needDetails)) {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
       }
